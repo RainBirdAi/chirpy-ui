@@ -346,7 +346,7 @@ function showResults (results) {
                 chatline.select('p')
                     .append('a')
                     .attr('href', window.location.protocol + '//' + window.location.host +
-                        'components/rainbird-analysis-ui/whyAnalysis.html?' + result.factID)
+                        '/components/rainbird-analysis-ui/whyAnalysis.html?id=' + result.factID + '?api=' + rapi.yolandaUrl)
                     .attr('target', '_blank')
                     .append('span')
                     .attr('class', 'glyphicon glyphicon-search')

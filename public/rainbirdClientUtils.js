@@ -8,7 +8,6 @@ var rapi = {
             },
             success: function (data, status) {
                 rapi.sessionID = data.id;
-                rapi.showWhyAnalysis = data.showWhyAnalysis;
                 callback(data);
             },
             error: function (data, status) {
@@ -56,6 +55,7 @@ var rapi = {
             type: 'GET',
             url: url,
             success: function (agent) {
+                rapi.showWhyAnalysis = agent.showWhyAnalysis;
                 callback(agent);
             },
             error: function (data, status) {

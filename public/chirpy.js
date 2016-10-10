@@ -13,7 +13,9 @@ function start () {
             } else {
                 console.log(agent);
                 addRBChatLine(agent.agentDescription);
+                var autoComplete = [];
                 agent.goals.forEach(function(goal) {
+                    autoComplete.push(goal.description);
                     var optionHolder = d3.select('.optionHolder');
                     optionHolder
                         .append('div')
@@ -49,6 +51,7 @@ function start () {
                                 }
                             });
                         });
+                    addSingularAutoComplete(autoComplete);
                 });
             }
         });
@@ -81,7 +84,7 @@ function addUserChatLine(text) {
         .classed('rbchat', true)
         .classed('triangle-isosceles-right', true)
         .text(text);
-    
+
     addRainbirdThinking();
 }
 
@@ -150,77 +153,92 @@ function addQuestion (question) {
             );
     } else if (!!~question.type.indexOf('Second Form')) {
         var autoCompleteNames = [];
-        question.concepts.forEach(function(conc) {
-            autoCompleteNames.push(conc.value);
-            if (question.plural) {
-                var checkHolder = optionHolder
-                    .append('label')
-                    .classed('responseButton', true);
+        $( '#userInput' ).datepicker( "destroy" );
+        d3.select('#userInput').classed('hasDatepicker', false);
+        if (question.dataType === 'date') {
+            $( function() {
+                $( "#userInput" ).datepicker();
+            } );
+        } else {
+            question.concepts.forEach(function (conc, i) {  //todo refactor into own function
+                autoCompleteNames.push(conc.value);
+                if (question.plural) {
+                    var checkHolder = optionHolder
+                        .append('label')
+                        .classed('responseButton', true);
 
-                checkHolder
-                    .append('span')
-                    .text(conc.value);
-
-                checkHolder
-                    .append('input')
-                    .attr('type', 'checkbox')
-                    .on('change', function() {
-                        checkHolder
-                            .classed('selectedLabel', checkHolder.select('input').property('checked'));
-                        if(checkHolder.select('input').property('checked')) {
-                            var seperator = '';
-                            if (d3.select('#userInput').property('value') !== '') {
-                                seperator = ', ';
-                            }
-                            d3.select('#userInput').property('value', d3.select('#userInput').property('value') + seperator + conc.value)
-                        } else {
-                            var userString = d3.select('#userInput').property('value');
-                            var splitString = userString.split( /,\s*/ );
-                            var indexOf = splitString.indexOf(conc.value);
-                            if (indexOf !== -1) {
-                                splitString.splice(indexOf, 1);
-                            }
-                            if (splitString.length) {
-                                splitString.forEach(function (subString, i) {
-                                    if (i === 0) {
-                                        d3.select('#userInput').property('value', splitString[0]);
-                                    } else {
-                                        d3.select('#userInput').property('value', d3.select('#userInput').property('value') + ', ' + subString);
-                                    }
-                                })
-                            } else {
-                                d3.select('#userInput').property('value', '');
-                            }
-
-                        }
-                    });
-                if(conc.metadata && conc.metadata.en && conc.metadata.en[0] && conc.metadata.en[0].dataType === 'image') {
-                    console.log(conc.metadata.en[0].data + '\')');
                     checkHolder
-                        .append('div')
-                        .style('background-image', 'url(\'' + conc.metadata.en[0].data + '\')')
-                        .classed('multiChoiceImage', true);
-                }
+                        .append('span')
+                        .text(conc.value);
 
-            } else {
-                optionHolder
-                    .append('div')
-                    .classed('responseButton', true)
-                    .text(conc.value)
-                    .datum(conc)
-                    .on('click', function () {
-                            addUserChatLine(conc.value);
-                            removeResponseButtons();
-                            rapi.respond([{
-                                subject: question.subject,
-                                relationship: question.relationship,
-                                object: conc.value,
-                                cf: 100
-                            }], handleResponse);
-                        }
-                    );
-            }
-        });
+                    checkHolder
+                        .append('input')
+                        .attr('type', 'checkbox')
+                        .on('change', function () {
+                            checkHolder
+                                .classed('selectedLabel', checkHolder.select('input').property('checked'));
+                            if (checkHolder.select('input').property('checked')) {
+                                var seperator = '';
+                                if (d3.select('#userInput').property('value') !== '') {
+                                    seperator = ', ';
+                                }
+                                d3.select('#userInput').property('value', d3.select('#userInput').property('value') + seperator + conc.value)
+                            } else {
+                                var userString = d3.select('#userInput').property('value');
+                                var splitString = userString.split(/,\s*/);
+                                var indexOf = splitString.indexOf(conc.value);
+                                if (indexOf !== -1) {
+                                    splitString.splice(indexOf, 1);
+                                }
+                                if (splitString.length) {
+                                    splitString.forEach(function (subString, i) {
+                                        if (i === 0) {
+                                            d3.select('#userInput').property('value', splitString[0]);
+                                        } else {
+                                            d3.select('#userInput').property('value', d3.select('#userInput').property('value') + ', ' + subString);
+                                        }
+                                    })
+                                } else {
+                                    d3.select('#userInput').property('value', '');
+                                }
+
+                            }
+                        });
+                    if (conc.metadata && conc.metadata.en && conc.metadata.en[0] && conc.metadata.en[0].dataType === 'image') {
+                        console.log(conc.metadata.en[0].data + '\')');
+                        checkHolder
+                            .append('div')
+                            .style('background-image', 'url(\'' + conc.metadata.en[0].data + '\')')
+                            .classed('multiChoiceImage', true);
+                    }
+
+                    checkHolder
+                        .style('opacity', 0)
+                        .transition()
+                        .delay(i*100)
+                        .duration(250)
+                        .style('opacity', 1);
+
+                } else {
+                    optionHolder
+                        .append('div')
+                        .classed('responseButton', true)
+                        .text(conc.value)
+                        .datum(conc)
+                        .on('click', function () {
+                                addUserChatLine(conc.value);
+                                removeResponseButtons();
+                                rapi.respond([{
+                                    subject: question.subject,
+                                    relationship: question.relationship,
+                                    object: conc.value,
+                                    cf: 100
+                                }], handleResponse);
+                            }
+                        );
+                }
+            });
+        }
         if (question.plural) {
             addPluralAutoComplete(autoCompleteNames);
         } else {
@@ -299,12 +317,29 @@ function checkInputAndHighlightButtons() {
     });
 }
 
-function showResults (result) {
+function showResults (results) {
     clearUserInput();
 
-    if (result.length) {
-        result.forEach(function (result) {
-            addRBChatLine('' + result.subject + ' ' + result.relationshipType + ' ' + result.object); //TODO RB-554 merge lines together
+    if (results.length) {
+        results.forEach(function (result, i) {
+            var chatline = addRBChatLine('' + result.subject + ' ' + result.relationshipType + ' ' + result.object);
+
+            chatline.select('p')
+                .style('border-top-left-radius', function() { return i === 0 ? '5px' : '2px' });
+
+            chatline
+                .style('opacity', 0)
+                .transition()
+                .delay(i*100)
+                .duration(100)
+                .style('opacity', 1);
+
+            if (i < results.length-1 ) {
+                chatline.select('p')
+                    .classed('triangle-isosceles-left', false)
+                    .classed('triangle-isosceles-left-group', true);
+            }
+
                 //TODO RB-556 enable why analysis
                 //.append('a')
                 //.attr('href', 'file:///Users/lawrie/Desktop/Develop/rainbird-analysis-ui/whyAnalysis.html?' + result.factID)
@@ -326,6 +361,7 @@ function showResults (result) {
     } else {
         addRBChatLine('Sorry I couldn\'t find an answer');
     }
+    start();
 }
 
 function addSingularAutoComplete(autoCompleteNames) {

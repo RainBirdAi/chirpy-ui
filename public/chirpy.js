@@ -342,10 +342,11 @@ function showResults (results) {
                 .duration(100)
                 .style('opacity', 1)
 
-            if (rapi.showWhyAnalysis) {    //TODO RB-556 enable why analysis
+            if (rapi.showWhyAnalysis) {
                 chatline.select('p')
                     .append('a')
-                    .attr('href', 'file:///Users/lawrie/Desktop/Develop/rainbird-analysis-ui/whyAnalysis.html?' + result.factID)  //todo use real url
+                    .attr('href', window.location.protocol + '//' + window.location.host +
+                        'components/rainbird-analysis-ui/whyAnalysis.html?' + result.factID)
                     .attr('target', '_blank')
                     .append('span')
                     .attr('class', 'glyphicon glyphicon-search')

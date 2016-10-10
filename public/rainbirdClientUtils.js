@@ -72,8 +72,5 @@ var rapi = {
     sessionID: '',
     APIKey: '',
     yolandaUrl: '',
-    showWhyAnalysis: false,
-    console: function() {
-        console.log('console out from rapi');
-    }
+    showWhyAnalysis: false
 };

@@ -39,7 +39,7 @@ body {
     position: relative;
     margin-right: 100px;
     margin-left: 15px;
-    margin-bottom: 0px;
+    margin-bottom: -3px;
     color: white;
     background: #ef0f4f;
     border-radius: 5px 5px 5px 2px;
@@ -108,6 +108,14 @@ input[type="checkbox"] {
 }
 a:hover {
     text-decoration: none;
+    color: white;
+}
+a {
+    color: white;
+}
+.whyAnalysisButton {
+    float: right;
+    margin-top: 2px;
 }
 .tooltiptext {
     position: relative;

@@ -332,7 +332,27 @@ function showResults (results) {
                 .transition()
                 .delay(i*100)
                 .duration(100)
-                .style('opacity', 1);
+                .style('opacity', 1)
+
+            if (rapi.showWhyAnalysis) {    //TODO RB-556 enable why analysis
+                chatline.select('p')
+                    .append('a')
+                    .attr('href', 'file:///Users/lawrie/Desktop/Develop/rainbird-analysis-ui/whyAnalysis.html?' + result.factID)  //todo use real url
+                    .attr('target', '_blank')
+                    .append('span')
+                    .attr('class', 'glyphicon glyphicon-search')
+                    .classed('whyAnalysisButton', true)
+                    .on("mouseover", function () {
+                        d3.select('#tooltiptext').transition().duration(500).style('opacity', 1);
+                    })
+                    .on("mouseout", function () {
+                        d3.select('#tooltiptext').transition().duration(75).style('opacity', 0);
+                    })
+                    .on("mousemove", function () {
+                        d3.select('#tooltiptext').style('top', d3.event.pageY + 'px');
+                        d3.select('#tooltiptext').style('left', d3.event.pageX + 'px');
+                    });
+            }
 
             if (i < results.length-1 ) {
                 chatline.select('p')
@@ -340,23 +360,6 @@ function showResults (results) {
                     .classed('triangle-isosceles-left-group', true);
             }
 
-                //TODO RB-556 enable why analysis
-                //.append('a')
-                //.attr('href', 'file:///Users/lawrie/Desktop/Develop/rainbird-analysis-ui/whyAnalysis.html?' + result.factID)
-                //.attr('target', '_blank')
-                //.append('span')
-                //.attr('class', 'glyphicon glyphicon-search')
-                //.style('float', 'right')
-                //.on("mouseover", function() {
-                //    d3.select('#tooltiptext').transition().duration(500).style('opacity', 1);
-                //})
-                //.on("mouseout", function() {
-                //    d3.select('#tooltiptext').transition().duration(75).style('opacity', 0);
-                //})
-                //.on("mousemove", function() {
-                //    d3.select('#tooltiptext').style('top', d3.event.pageY + 'px');
-                //    d3.select('#tooltiptext').style('left',d3.event.pageX + 'px');
-                //});
         });
     } else {
         addRBChatLine('Sorry I couldn\'t find an answer');

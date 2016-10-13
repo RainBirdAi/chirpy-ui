@@ -1,60 +1,68 @@
-start();
+(function() {   //We serve this page wrapped in a div with the api and apiKey properties
+    //replace this with your own way of passing in the apikey and target url
+    rapi.setAPIKey(d3.select('#init').attr('apiKey'));
+    rapi.setYolandaURL(d3.select('#init').attr('api'));
+    start();
+})();
 
 function start () {
     d3.select('#userInput').on('keyup', checkInputAndHighlightButtons);
-    rapi.setAPIKey('easyKey'); //TODO RB-558 Fix API key being hard coded
-    rapi.setYolandaURL('http://localhost:3100'); //TODO RB-551'
-
-    rapi.getAgentConfig("http://localhost:3000/agent/b2064a72-f4ad-44bb-a76a-5163408ddcd5/config", function(agent, error, status)
-        {
-            if (error) {
-                console.error(error, status);
-                alert('Try disabling CORS and try again');
-            } else {
-                console.log(agent);
-                addRBChatLine(agent.agentDescription);
-                var autoComplete = [];
-                agent.goals.forEach(function(goal) {
-                    autoComplete.push(goal.description);
-                    var optionHolder = d3.select('.optionHolder');
-                    optionHolder
-                        .append('div')
-                        .classed('responseButton', true)
-                        .text(goal.description)
-                        .on('click', function() {
-                            addUserChatLine(goal.description);
-                            removeResponseButtons();
-                            rapi.start(agent.kbId, function(data) {
-                                if (goal.subjectInstance === 'user provided' || goal.objectInstance === 'user provided') {
-                                    if (goal.subject) {
-                                        addRBChatLine(goal.subject + '?');
-                                    } else {
-                                        addRBChatLine(goal.object + '?');
-                                    }
-                                    d3.select('#sendButton').on('click', function() {
-                                        addUserChatLine(d3.select('#userInput').property('value'));
-                                        var ourQuery = {
-                                            subject: goal.subjectInstance ? d3.select('#userInput').property('value') : null,
-                                            relationship: goal.rel,
-                                            object: goal.objectInstance ? d3.select('#userInput').property('value')  : null
-                                        };
-                                        rapi.query(ourQuery, handleResponse);
-                                        clearUserInput();
-                                    });
+    rapi.getAgentConfig("http://localhost:3000/agent/" + getIDFromUrl() + "/config", function(agent, error, status)
+    {
+        if (error) {
+            console.error(error, status);
+        } else {
+            console.log(agent);
+            addRBChatLine(agent.agentDescription);
+            var autoComplete = [];
+            agent.goals.forEach(function(goal) {
+                autoComplete.push(goal.description);
+                var optionHolder = d3.select('.optionHolder');
+                optionHolder
+                    .append('div')
+                    .classed('responseButton', true)
+                    .text(goal.description)
+                    .on('click', function() {
+                        addUserChatLine(goal.description);
+                        removeResponseButtons();
+                        rapi.start(agent.kbId, function(data) {
+                            if (goal.subjectInstance === 'user provided' || goal.objectInstance === 'user provided') {
+                                if (goal.subject) {
+                                    addRBChatLine(goal.subject + '?');
                                 } else {
+                                    addRBChatLine(goal.object + '?');
+                                }
+                                d3.select('#sendButton').on('click', function() {
+                                    addUserChatLine(d3.select('#userInput').property('value'));
                                     var ourQuery = {
-                                        subject: goal.subjectInstance ? goal.subjectInstance : null,
+                                        subject: goal.subjectInstance ? d3.select('#userInput').property('value') : null,
                                         relationship: goal.rel,
-                                        object: goal.objectInstance ? goal.objectInstance : null
+                                        object: goal.objectInstance ? d3.select('#userInput').property('value')  : null
                                     };
                                     rapi.query(ourQuery, handleResponse);
-                                }
-                            });
+                                    clearUserInput();
+                                });
+                            } else {
+                                var ourQuery = {
+                                    subject: goal.subjectInstance ? goal.subjectInstance : null,
+                                    relationship: goal.rel,
+                                    object: goal.objectInstance ? goal.objectInstance : null
+                                };
+                                rapi.query(ourQuery, handleResponse);
+                            }
                         });
-                    addSingularAutoComplete(autoComplete);
-                });
-            }
-        });
+                    });
+                addSingularAutoComplete(autoComplete);
+            });
+        }
+    });
+}
+
+function getIDFromUrl() {
+    var url = window.location.href;
+    var urlArray = url.split('/');
+
+    return urlArray[urlArray.length-1];
 }
 
 function handleResponse(data) {
@@ -93,7 +101,7 @@ function addRainbirdThinking () {
         .append('div')
         .attr('id', 'loadingGIF')
         .append('img')
-        .attr('src', 'images/loadingGIF.gif');
+        .attr('src', '/public/images/loadingGIF.gif');
 }
 function removeRainbirdThinking () {
     var chatHolder = d3.select('#loadingGIF').remove();

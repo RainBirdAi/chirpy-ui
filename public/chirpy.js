@@ -1,5 +1,5 @@
 (function() {   //We serve this page wrapped in a div with the api and apiKey properties
-    //replace this with your own way of passing in the apikey and target url
+                //replace this with your own way of passing in the apikey and target url
     rapi.setAPIKey(d3.select('#init').attr('apiKey'));
     rapi.setYolandaURL(d3.select('#init').attr('api'));
     start();
@@ -7,7 +7,7 @@
 
 function start () {
     d3.select('#userInput').on('keyup', checkInputAndHighlightButtons);
-    rapi.getAgentConfig("http://localhost:3000/agent/" + getIDFromUrl() + "/config", function(agent, error, status)
+    rapi.getAgentConfig( window.location.protocol + "//" + window.location.host + "/agent/" + getIDFromUrl() + "/config", function(agent, error, status)
     {
         if (error) {
             console.error(error, status);

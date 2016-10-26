@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v0.0.13
+
+  *  [Fix] RB-586: Remove API key from front end.
+
 ## v0.0.1
 
   *  [New] Project seed

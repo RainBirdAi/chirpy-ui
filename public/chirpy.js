@@ -1,6 +1,6 @@
-(function() {   //We serve this page wrapped in a div with the api and apiKey properties
-                //replace this with your own way of passing in the apikey and target url
-    rapi.setAPIKey(d3.select('#init').attr('apiKey'));
+(function() {   //We serve this page wrapped in a div with the api url properties replace
+                //this with your own way of passing in the api URL - you will also need to call
+                //the start end point with an APIKey, please refer to the documentation on how to do this
     rapi.setYolandaURL(d3.select('#init').attr('api'));
     start();
 })();
@@ -13,6 +13,7 @@ function start () {
             console.error(error, status);
         } else {
             console.log(agent);
+            rapi.sessionID = agent.contextId;
             addRBChatLine(agent.agentDescription);
             var autoComplete = [];
             agent.goals.forEach(function(goal) {
@@ -25,32 +26,30 @@ function start () {
                     .on('click', function() {
                         addUserChatLine(goal.description);
                         removeResponseButtons();
-                        rapi.start(agent.kbId, function(data) {
-                            if (goal.subjectInstance === 'user provided' || goal.objectInstance === 'user provided') {
-                                if (goal.subject) {
-                                    addRBChatLine(goal.subject + '?');
-                                } else {
-                                    addRBChatLine(goal.object + '?');
-                                }
-                                d3.select('#sendButton').on('click', function() {
-                                    addUserChatLine(d3.select('#userInput').property('value'));
-                                    var ourQuery = {
-                                        subject: goal.subjectInstance ? d3.select('#userInput').property('value') : null,
-                                        relationship: goal.rel,
-                                        object: goal.objectInstance ? d3.select('#userInput').property('value')  : null
-                                    };
-                                    rapi.query(ourQuery, handleResponse);
-                                    clearUserInput();
-                                });
+                        if (goal.subjectInstance === 'user provided' || goal.objectInstance === 'user provided') {
+                            if (goal.subject) {
+                                addRBChatLine(goal.subject + '?');
                             } else {
+                                addRBChatLine(goal.object + '?');
+                            }
+                            d3.select('#sendButton').on('click', function() {
+                                addUserChatLine(d3.select('#userInput').property('value'));
                                 var ourQuery = {
-                                    subject: goal.subjectInstance ? goal.subjectInstance : null,
+                                    subject: goal.subjectInstance ? d3.select('#userInput').property('value') : null,
                                     relationship: goal.rel,
-                                    object: goal.objectInstance ? goal.objectInstance : null
+                                    object: goal.objectInstance ? d3.select('#userInput').property('value')  : null
                                 };
                                 rapi.query(ourQuery, handleResponse);
-                            }
-                        });
+                                clearUserInput();
+                            });
+                        } else {
+                            var ourQuery = {
+                                subject: goal.subjectInstance ? goal.subjectInstance : null,
+                                relationship: goal.rel,
+                                object: goal.objectInstance ? goal.objectInstance : null
+                            };
+                            rapi.query(ourQuery, handleResponse);
+                        }
                     });
                 addSingularAutoComplete(autoComplete);
             });

@@ -1,6 +1,5 @@
-(function() {   //We serve this page wrapped in a div with the api url properties replace
-                //this with your own way of passing in the api URL - you will also need to call
-                //the start end point with an APIKey, please refer to the documentation on how to do this
+(function() {   //We serve this page wrapped in a div with the api and apiKey properties
+                //replace this with your own way of passing in the apikey and target url
     rapi.setYolandaURL(d3.select('#init').attr('api'));
     start();
 })();
@@ -52,9 +51,11 @@ function start () {
                         }
                     });
                 addSingularAutoComplete(autoComplete);
+                resizeAndScroll();
             });
         }
     });
+
 }
 
 function getIDFromUrl() {
@@ -71,6 +72,20 @@ function handleResponse(data) {
     } else {
         showResults(data.result);
     }
+    resizeAndScroll();
+}
+
+function resizeAndScroll() {
+    d3.select('#rows').style('height', function() {
+        var height = $('.chatHolder').height() - $('#user-inputs').height() - 40;
+        console.log($('#innerRows').height());
+        $('#rows').animate({
+                scrollTop: $('#innerRows').height()-height+50},
+            400,
+            "easeOutQuint"
+        );
+        return height;
+    });
 }
 
 function removeResponseButtons () {
@@ -82,7 +97,7 @@ function clearUserInput() {
 }
 
 function addUserChatLine(text) {
-    var chatHolder = d3.select('.chatHolder').select('#rows')
+    var chatHolder = d3.select('.chatHolder').select('#innerRows')
         .append('div')
         .classed('chatLine', true);
 
@@ -96,7 +111,7 @@ function addUserChatLine(text) {
 }
 
 function addRainbirdThinking () {
-    var chatHolder = d3.select('.chatHolder').select('#rows')
+    var chatHolder = d3.select('.chatHolder').select('#innerRows')
         .append('div')
         .attr('id', 'loadingGIF')
         .append('img')
@@ -107,7 +122,7 @@ function removeRainbirdThinking () {
 }
 
 function addRBChatLine (string) {
-    var chatHolder = d3.select('.chatHolder').select('#rows')
+    var chatHolder = d3.select('.chatHolder').select('#innerRows')
         .append('div')
         .classed('chatLine', true);
     //chatHolder.append('img')
@@ -117,12 +132,18 @@ function addRBChatLine (string) {
         .classed('rbchat', true)
         .classed('triangle-isosceles-left', true)
         .text(string);
+
+    chatHolder
+        .style('opacity', 0)
+        .transition()
+        .duration(100)
+        .style('opacity', 1)
+
     return chatHolder
 }
 
 function addQuestion (question) {
     addRBChatLine(question.prompt);
-
 
     var optionHolder = d3.select('.optionHolder');
 
@@ -227,8 +248,9 @@ function addQuestion (question) {
                         .style('opacity', 1);
 
                 } else {
-                    optionHolder
-                        .append('div')
+                    var responseButton = optionHolder.append('div');
+
+                    responseButton
                         .classed('responseButton', true)
                         .text(conc.value)
                         .datum(conc)
@@ -243,6 +265,12 @@ function addQuestion (question) {
                                 }], handleResponse);
                             }
                         );
+                    responseButton
+                        .style('opacity', 0)
+                        .transition()
+                        .delay(i*10)
+                        .duration(250)
+                        .style('opacity', 1);
                 }
             });
         }

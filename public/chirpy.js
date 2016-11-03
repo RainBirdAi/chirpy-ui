@@ -1,6 +1,5 @@
 (function() {   //We serve this page wrapped in a div with the api and apiKey properties
                 //replace this with your own way of passing in the apikey and target url
-    rapi.setAPIKey(d3.select('#init').attr('apiKey'));
     rapi.setYolandaURL(d3.select('#init').attr('api'));
     start();
 })();
@@ -13,6 +12,7 @@ function start () {
             console.error(error, status);
         } else {
             console.log(agent);
+            rapi.sessionID = agent.contextId;
             addRBChatLine(agent.agentDescription);
             var autoComplete = [];
             agent.goals.forEach(function(goal) {
@@ -25,37 +25,37 @@ function start () {
                     .on('click', function() {
                         addUserChatLine(goal.description);
                         removeResponseButtons();
-                        rapi.start(agent.kbId, function(data) {
-                            if (goal.subjectInstance === 'user provided' || goal.objectInstance === 'user provided') {
-                                if (goal.subject) {
-                                    addRBChatLine(goal.subject + '?');
-                                } else {
-                                    addRBChatLine(goal.object + '?');
-                                }
-                                d3.select('#sendButton').on('click', function() {
-                                    addUserChatLine(d3.select('#userInput').property('value'));
-                                    var ourQuery = {
-                                        subject: goal.subjectInstance ? d3.select('#userInput').property('value') : null,
-                                        relationship: goal.rel,
-                                        object: goal.objectInstance ? d3.select('#userInput').property('value')  : null
-                                    };
-                                    rapi.query(ourQuery, handleResponse);
-                                    clearUserInput();
-                                });
+                        if (goal.subjectInstance === 'user provided' || goal.objectInstance === 'user provided') {
+                            if (goal.subject) {
+                                addRBChatLine(goal.subject + '?');
                             } else {
+                                addRBChatLine(goal.object + '?');
+                            }
+                            d3.select('#sendButton').on('click', function() {
+                                addUserChatLine(d3.select('#userInput').property('value'));
                                 var ourQuery = {
-                                    subject: goal.subjectInstance ? goal.subjectInstance : null,
+                                    subject: goal.subjectInstance ? d3.select('#userInput').property('value') : null,
                                     relationship: goal.rel,
-                                    object: goal.objectInstance ? goal.objectInstance : null
+                                    object: goal.objectInstance ? d3.select('#userInput').property('value')  : null
                                 };
                                 rapi.query(ourQuery, handleResponse);
-                            }
-                        });
+                                clearUserInput();
+                            });
+                        } else {
+                            var ourQuery = {
+                                subject: goal.subjectInstance ? goal.subjectInstance : null,
+                                relationship: goal.rel,
+                                object: goal.objectInstance ? goal.objectInstance : null
+                            };
+                            rapi.query(ourQuery, handleResponse);
+                        }
                     });
                 addSingularAutoComplete(autoComplete);
+                resizeAndScroll();
             });
         }
     });
+
 }
 
 function getIDFromUrl() {
@@ -72,6 +72,20 @@ function handleResponse(data) {
     } else {
         showResults(data.result);
     }
+    resizeAndScroll();
+}
+
+function resizeAndScroll() {
+    d3.select('#rows').style('height', function() {
+        var height = $('.chatHolder').height() - $('#user-inputs').height() - 40;
+        console.log($('#innerRows').height());
+        $('#rows').animate({
+                scrollTop: $('#innerRows').height()-height+50},
+            400,
+            "easeOutQuint"
+        );
+        return height;
+    });
 }
 
 function removeResponseButtons () {
@@ -83,7 +97,7 @@ function clearUserInput() {
 }
 
 function addUserChatLine(text) {
-    var chatHolder = d3.select('.chatHolder').select('#rows')
+    var chatHolder = d3.select('.chatHolder').select('#innerRows')
         .append('div')
         .classed('chatLine', true);
 
@@ -97,7 +111,7 @@ function addUserChatLine(text) {
 }
 
 function addRainbirdThinking () {
-    var chatHolder = d3.select('.chatHolder').select('#rows')
+    var chatHolder = d3.select('.chatHolder').select('#innerRows')
         .append('div')
         .attr('id', 'loadingGIF')
         .append('img')
@@ -108,7 +122,7 @@ function removeRainbirdThinking () {
 }
 
 function addRBChatLine (string) {
-    var chatHolder = d3.select('.chatHolder').select('#rows')
+    var chatHolder = d3.select('.chatHolder').select('#innerRows')
         .append('div')
         .classed('chatLine', true);
     //chatHolder.append('img')
@@ -118,12 +132,18 @@ function addRBChatLine (string) {
         .classed('rbchat', true)
         .classed('triangle-isosceles-left', true)
         .text(string);
+
+    chatHolder
+        .style('opacity', 0)
+        .transition()
+        .duration(100)
+        .style('opacity', 1)
+
     return chatHolder
 }
 
 function addQuestion (question) {
     addRBChatLine(question.prompt);
-
 
     var optionHolder = d3.select('.optionHolder');
 
@@ -228,8 +248,9 @@ function addQuestion (question) {
                         .style('opacity', 1);
 
                 } else {
-                    optionHolder
-                        .append('div')
+                    var responseButton = optionHolder.append('div');
+
+                    responseButton
                         .classed('responseButton', true)
                         .text(conc.value)
                         .datum(conc)
@@ -244,6 +265,12 @@ function addQuestion (question) {
                                 }], handleResponse);
                             }
                         );
+                    responseButton
+                        .style('opacity', 0)
+                        .transition()
+                        .delay(i*10)
+                        .duration(250)
+                        .style('opacity', 1);
                 }
             });
         }

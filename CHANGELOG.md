@@ -10,6 +10,11 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v0.0.13
+
+  * [Misc] RB-58*: Add animations to be less jumpy, new layout for better UX
+  *  [Fix] RB-586: Remove API key from front end.
+
 ## v0.0.1
 
   *  [New] Project seed

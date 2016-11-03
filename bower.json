@@ -1,6 +1,6 @@
 {
   "name": "chirpy-ui",
-  "version": "0.0.10",
+  "version": "0.0.13",
   "homepage": "https://github.com/RainBirdAi/chirpy-ui",
   "dependencies": {
     "jquery": "1.9.1",

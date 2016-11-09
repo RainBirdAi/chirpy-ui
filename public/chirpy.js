@@ -1,5 +1,5 @@
 (function() {   //We serve this page wrapped in a div with the api and apiKey properties
-                //replace this with your own way of passing in the apikey and target url
+    //replace this with your own way of passing in the apikey and target url
     rapi.setYolandaURL(d3.select('#init').attr('api'));
     start();
 })();
@@ -41,6 +41,7 @@ function start () {
                                 rapi.query(ourQuery, handleResponse);
                                 clearUserInput();
                             });
+                            removeRainbirdThinking();
                         } else {
                             var ourQuery = {
                                 subject: goal.subjectInstance ? goal.subjectInstance : null,
@@ -279,11 +280,11 @@ function addQuestion (question) {
         } else {
             addSingularAutoComplete(autoCompleteNames);
         }
-        d3.select('#sendButton')
-            .on('click', function() {
-                send(question);
-            });
     }
+    d3.select('#sendButton')  //lawrie todo check this is in the right place
+        .on('click', function() {
+            send(question);
+        });
 }
 
 function send(question, input) {
@@ -408,7 +409,8 @@ function addSingularAutoComplete(autoCompleteNames) {
         $( "#userInput" )
             .autocomplete({
                 minLength: 1,
-                source: autoCompleteNames
+                source: autoCompleteNames,
+                position: { my: "left bottom", at: "left top", collision: "flip" }
             });
     });
 }

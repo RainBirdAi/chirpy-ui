@@ -6,10 +6,11 @@ var rapi = {
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify({answers:answers}),
             success: function (data, status) {
-                callback(data);
+                callback(null, data);
             },
             error: function (data, status) {
                 console.error(data);
+                callback(data);
             }
         });
     },
@@ -21,10 +22,11 @@ var rapi = {
             data: JSON.stringify(query),
             success: function (data, status) {
                 console.log('data', data);
-                callback(data);
+                callback(null, data);
             },
             error: function (data, status) {
                 console.error(data);
+                callback(data);
             }
         });
     },
@@ -34,10 +36,10 @@ var rapi = {
             url: url,
             success: function (agent) {
                 rapi.showWhyAnalysis = agent.showWhyAnalysis;
-                callback(agent);
+                callback(null, agent);
             },
             error: function (data, status) {
-                callback(null, data, status);
+                callback(data);
             }
         });
     },
@@ -46,5 +48,6 @@ var rapi = {
     },
     sessionID: '',
     yolandaUrl: '',
-    showWhyAnalysis: false
+    showWhyAnalysis: false,
+    currentGoal: null
 };

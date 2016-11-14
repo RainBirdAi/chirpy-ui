@@ -1,16 +1,71 @@
 (function() {   //We serve this page wrapped in a div with the api and apiKey properties
-                //replace this with your own way of passing in the apikey and target url
+    //replace this with your own way of passing in the apikey and target url
     rapi.setYolandaURL(d3.select('#init').attr('api'));
     start();
 })();
 
+function selectGoal(goal) {
+    rapi.currentGoal = goal;
+    addUserChatLine(goal.description);
+    removeResponseButtons();
+
+    var waitForUserProvided = function() {
+        addUserChatLine(d3.select('#userInput').property('value'));
+        var ourQuery = {
+            subject: goal.subjectInstance ? d3.select('#userInput').property('value') : null,
+            relationship: goal.rel,
+            object: goal.objectInstance ? d3.select('#userInput').property('value')  : null
+        };
+        rapi.query(ourQuery, handleResponse);
+        clearUserInput();
+
+    };
+
+    if (goal.subjectInstance === 'user provided' || goal.objectInstance === 'user provided') {
+        clearUserInput();
+        removeRainbirdThinking();
+        removeAutoComplete();
+        if (goal.subject) {
+            addRBChatLine(goal.subject + '?');
+        } else {
+            addRBChatLine(goal.object + '?');
+        }
+        d3.select('#sendButton').on('click', waitForUserProvided);
+        d3.select('#userInput').on('keydown', function() {
+            if (d3.event.key === 'Enter') {
+                waitForUserProvided();
+            }
+        });
+    } else {
+        var ourQuery = {
+            subject: goal.subjectInstance ? goal.subjectInstance : null,
+            relationship: goal.rel,
+            object: goal.objectInstance ? goal.objectInstance : null
+        };
+        rapi.query(ourQuery, handleResponse);
+        clearUserInput();
+    }
+}
+
 function start () {
     d3.select('#userInput').on('keyup', checkInputAndHighlightButtons);
-    rapi.getAgentConfig( window.location.protocol + "//" + window.location.host + "/agent/" + getIDFromUrl() + "/config", function(agent, error, status)
+    rapi.getAgentConfig( window.location.protocol + "//" + window.location.host + "/agent/" + getIDFromUrl() + "/config", function(error, agent, status)
     {
         if (error) {
             console.error(error, status);
         } else {
+
+            d3.select('#userInput').on('keydown', function() {
+                if (d3.event.key === 'Enter') {
+                    agent.goals.some(function(goal) {
+                        if(goal.description === d3.select('#userInput').property('value')) {
+                            selectGoal(goal);
+                            return true;
+                        }
+                    });
+                }
+            });
+
             console.log(agent);
             rapi.sessionID = agent.contextId;
             addRBChatLine(agent.agentDescription);
@@ -23,40 +78,15 @@ function start () {
                     .classed('responseButton', true)
                     .text(goal.description)
                     .on('click', function() {
-                        addUserChatLine(goal.description);
-                        removeResponseButtons();
-                        if (goal.subjectInstance === 'user provided' || goal.objectInstance === 'user provided') {
-                            if (goal.subject) {
-                                addRBChatLine(goal.subject + '?');
-                            } else {
-                                addRBChatLine(goal.object + '?');
-                            }
-                            d3.select('#sendButton').on('click', function() {
-                                addUserChatLine(d3.select('#userInput').property('value'));
-                                var ourQuery = {
-                                    subject: goal.subjectInstance ? d3.select('#userInput').property('value') : null,
-                                    relationship: goal.rel,
-                                    object: goal.objectInstance ? d3.select('#userInput').property('value')  : null
-                                };
-                                rapi.query(ourQuery, handleResponse);
-                                clearUserInput();
-                            });
-                        } else {
-                            var ourQuery = {
-                                subject: goal.subjectInstance ? goal.subjectInstance : null,
-                                relationship: goal.rel,
-                                object: goal.objectInstance ? goal.objectInstance : null
-                            };
-                            rapi.query(ourQuery, handleResponse);
-                        }
+                        selectGoal(goal);
                     });
                 addSingularAutoComplete(autoComplete);
                 resizeAndScroll();
             });
         }
     });
-
 }
+
 
 function getIDFromUrl() {
     var url = window.location.href;
@@ -65,9 +95,11 @@ function getIDFromUrl() {
     return urlArray[urlArray.length-1];
 }
 
-function handleResponse(data) {
+function handleResponse(err, data) {
     removeRainbirdThinking();
-    if (data.question) {
+    if (err) {
+        addRBChatLine('Sorry, error processing your request');
+    } else if (data.question) {
         addQuestion(data.question);
     } else {
         showResults(data.result);
@@ -78,7 +110,6 @@ function handleResponse(data) {
 function resizeAndScroll() {
     d3.select('#rows').style('height', function() {
         var height = $('.chatHolder').height() - $('#user-inputs').height() - 40;
-        console.log($('#innerRows').height());
         $('#rows').animate({
                 scrollTop: $('#innerRows').height()-height+50},
             400,
@@ -94,6 +125,7 @@ function removeResponseButtons () {
 
 function clearUserInput() {
     d3.select('#userInput').property('value', '');
+    $('#userInput').focus();
 }
 
 function addUserChatLine(text) {
@@ -125,8 +157,7 @@ function addRBChatLine (string) {
     var chatHolder = d3.select('.chatHolder').select('#innerRows')
         .append('div')
         .classed('chatLine', true);
-    //chatHolder.append('img')
-    //    .attr('src', 'images/icon.png');
+
     chatHolder
         .append('p')
         .classed('rbchat', true)
@@ -144,6 +175,12 @@ function addRBChatLine (string) {
 
 function addQuestion (question) {
     addRBChatLine(question.prompt);
+
+    d3.select('#userInput').on('keydown', function() {
+        if (d3.event.key === 'Enter') {
+            send(question);
+        }
+    })
 
     var optionHolder = d3.select('.optionHolder');
 
@@ -187,7 +224,7 @@ function addQuestion (question) {
             $( function() {
                 $( "#userInput" ).datepicker();
             } );
-        } else {
+        } else if(question.concepts) {
             question.concepts.forEach(function (conc, i) {  //todo refactor into own function
                 autoCompleteNames.push(conc.value);
                 if (question.plural) {
@@ -357,7 +394,12 @@ function showResults (results) {
 
     if (results.length) {
         results.forEach(function (result, i) {
-            var chatline = addRBChatLine('' + result.subject + ' ' + result.relationshipType + ' ' + result.object);
+            var resultText = rapi.currentGoal.text;
+            resultText = resultText.replace('%S', result.subject);
+            resultText = resultText.replace('%R', result.relationshipType ? result.relationshipType : result.relationship);
+            resultText = resultText.replace('%O', result.object);
+
+            var chatline = addRBChatLine(resultText);
 
             chatline.select('p')
                 .style('border-top-left-radius', function() { return i === 0 ? '5px' : '2px' });
@@ -403,12 +445,42 @@ function showResults (results) {
     start();
 }
 
+function removeAutoComplete(autoCompleteNames) {
+    $( function() {
+        $( "#userInput" )
+            .on( "keydown", function( event ) {
+                if (event.keyCode === $.ui.keyCode.TAB) {
+                    event.preventDefault();
+                }
+            })
+            .autocomplete({
+                minLength: 1,
+                source: [],
+                select: function( event, ui ) {
+                    this.value = ui.item.value;
+                    return false;
+                },
+                position: { my: "left bottom", at: "left top", collision: "flip" }
+            });
+    });
+}
+
 function addSingularAutoComplete(autoCompleteNames) {
     $( function() {
         $( "#userInput" )
+            .on( "keydown", function( event ) {
+                if (event.keyCode === $.ui.keyCode.TAB) {
+                    event.preventDefault();
+                }
+            })
             .autocomplete({
                 minLength: 1,
-                source: autoCompleteNames
+                source: autoCompleteNames,
+                select: function( event, ui ) {
+                    this.value = ui.item.value;
+                    return false;
+                },
+                position: { my: "left bottom", at: "left top", collision: "flip" }
             });
     });
 }
@@ -425,8 +497,7 @@ function addPluralAutoComplete(autoCompleteNames) {
 
             $( "#userInput" )
                 .on( "keydown", function( event ) {
-                    if ( event.keyCode === $.ui.keyCode.TAB &&
-                        $( this ).autocomplete( "instance" ).menu.active ) {
+                    if (event.keyCode === $.ui.keyCode.TAB) {
                         event.preventDefault();
                     }
                 })
@@ -446,7 +517,8 @@ function addPluralAutoComplete(autoCompleteNames) {
                         terms.push( "" );
                         this.value = terms.join( ", " );
                         return false;
-                    }
+                    },
+                    position: { my: "left bottom", at: "left top", collision: "flip" }
                 });
         } );
     } );

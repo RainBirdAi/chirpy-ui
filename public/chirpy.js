@@ -24,6 +24,7 @@ function start () {
                     .text(goal.description)
                     .on('click', function() {
                         addUserChatLine(goal.description);
+                        rapi.currentGoal = goal;
                         removeResponseButtons();
                         if (goal.subjectInstance === 'user provided' || goal.objectInstance === 'user provided') {
                             if (goal.subject) {
@@ -56,8 +57,8 @@ function start () {
             });
         }
     });
-
 }
+
 
 function getIDFromUrl() {
     var url = window.location.href;
@@ -79,7 +80,6 @@ function handleResponse(data) {
 function resizeAndScroll() {
     d3.select('#rows').style('height', function() {
         var height = $('.chatHolder').height() - $('#user-inputs').height() - 40;
-        console.log($('#innerRows').height());
         $('#rows').animate({
                 scrollTop: $('#innerRows').height()-height+50},
             400,
@@ -188,7 +188,7 @@ function addQuestion (question) {
             $( function() {
                 $( "#userInput" ).datepicker();
             } );
-        } else {
+        } else if(question.concepts) {
             question.concepts.forEach(function (conc, i) {  //todo refactor into own function
                 autoCompleteNames.push(conc.value);
                 if (question.plural) {
@@ -358,7 +358,12 @@ function showResults (results) {
 
     if (results.length) {
         results.forEach(function (result, i) {
-            var chatline = addRBChatLine('' + result.subject + ' ' + result.relationshipType + ' ' + result.object);
+            var resultText = rapi.currentGoal.text;
+            resultText = resultText.replace('%S', result.subject);
+            resultText = resultText.replace('%R', result.relationshipType ? result.relationshipType : result.relationship);
+            resultText = resultText.replace('%O', result.object);
+
+            var chatline = addRBChatLine(resultText);
 
             chatline.select('p')
                 .style('border-top-left-radius', function() { return i === 0 ? '5px' : '2px' });

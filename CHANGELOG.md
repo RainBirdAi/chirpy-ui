@@ -12,6 +12,7 @@ facing release notes.
 
 ## v1.1.0
 
+  *  [Fix] RB-604: Improve enter button functionality
   *  [Fix] RB-612: Fix goal text being ignored
 
 ## v1.0.0

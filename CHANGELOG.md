@@ -10,6 +10,14 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v1.1.0
+
+  *  [Fix] RB-612: Fix goal text being ignored
+
+## v1.0.0
+
+  * [Misc] Release
+
 ## v0.0.13
 
   * [Misc] RB-58*: Add animations to be less jumpy, new layout for better UX

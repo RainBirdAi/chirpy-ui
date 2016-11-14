@@ -46,5 +46,6 @@ var rapi = {
     },
     sessionID: '',
     yolandaUrl: '',
-    showWhyAnalysis: false
+    showWhyAnalysis: false,
+    currentGoal: null
 };

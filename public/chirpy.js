@@ -48,7 +48,6 @@ function selectGoal(goal) {
 }
 
 function start () {
-    d3.select('#userInput').on('keyup', checkInputAndHighlightButtons);
     rapi.getAgentConfig( window.location.protocol + "//" + window.location.host + "/agent/" + getIDFromUrl() + "/config", function(error, agent, status)
     {
         if (error) {
@@ -175,12 +174,22 @@ function addRBChatLine (string) {
 
 function addQuestion (question) {
     addRBChatLine(question.prompt);
+    d3.select('#userInput').on('keyup', function() {checkInputAndHighlightButtons(question);});
 
     d3.select('#userInput').on('keydown', function() {
         if (d3.event.key === 'Enter') {
-            send(question);
+            if (checkInputAndHighlightButtons(question)) {
+                send(question);
+            } else {
+                d3.select('#userInput')
+                    .transition()
+                    .duration(200)
+                    .styleTween('margin-left', function() {
+                        return function(t) { return Math.sin(t*Math.PI*10)*10 + 'px'; }
+                    });
+            }
         }
-    })
+    });
 
     var optionHolder = d3.select('.optionHolder');
 
@@ -317,9 +326,11 @@ function addQuestion (question) {
             addSingularAutoComplete(autoCompleteNames);
         }
     }
-    d3.select('#sendButton')  //lawrie todo check this is in the right place
+    d3.select('#sendButton') 
         .on('click', function() {
-            send(question);
+            if (checkInputAndHighlightButtons(question)) {
+                send(question);
+            }
         });
 }
 
@@ -365,14 +376,16 @@ function checkInputForMatches() {
         if (option.select('input').property('checked')) {
             d3.select('#userInput').property('value', d3.select('#userInput').property('value') + ', ' + option.text());
         }
-    })
+    });
 }
 
-function checkInputAndHighlightButtons() {
+function checkInputAndHighlightButtons(question) {
     var userInputText = d3.select('#userInput').property('value');
     var subStrings = userInputText.split( /,\s*/ );
+    var nonWhiteSpace = userInputText.search( /\S/ );
 
     var allOptions = d3.selectAll('.responseButton')[0];
+    var numberMatched = 0;
 
     allOptions.forEach(function(html) {
         var option = d3.select(html);
@@ -381,12 +394,28 @@ function checkInputAndHighlightButtons() {
             option.select('input')
                 .property('checked', true);
             option.classed('selectedLabel', true);
+            numberMatched++;
         } else {
             option.select('input')
                 .property('checked', false);
             option.classed('selectedLabel', false);
         }
     });
+    subStrings.forEach(function(subString) {
+        if(subString.length === 0) {
+            numberMatched++;
+        }
+    });
+
+    if (!question.canAdd && numberMatched !== subStrings.length) {
+        d3.select('#sendButton').classed('disabled', true);
+        return false;
+    } else if (!!~nonWhiteSpace) {
+        d3.select('#sendButton').classed('disabled', false);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function showResults (results) {

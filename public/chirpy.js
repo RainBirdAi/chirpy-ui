@@ -1,6 +1,7 @@
 (function() {   //We serve this page wrapped in a div with the api and apiKey properties
     //replace this with your own way of passing in the apikey and target url
-    rapi.setYolandaURL(d3.select('#init').attr('api'));
+    //rapi.setYolandaURL(d3.select('#init').attr('api'));
+    rapi.setYolandaURL('http://localhost:3100');
     start();
 })();
 
@@ -48,7 +49,12 @@ function selectGoal(goal) {
 }
 
 function start () {
+<<<<<<< 1e85ee6e8634224df45356edc6e66987c358e78e
     rapi.getAgentConfig( window.location.protocol + "//" + window.location.host + "/agent/" + getIDFromUrl() + "/config", function(error, agent, status)
+=======
+    //rapi.getAgentConfig( window.location.protocol + "//" + window.location.host + "/agent/" + getIDFromUrl() + "/config", function(error, agent, status)
+    rapi.getAgentConfig( 'http://localhost:3000/agent/76619ff0-e336-41aa-8ca7-49eae1a01469/config', function(error, agent, status)  //lawrie todo, don't commit this change
+>>>>>>> RB-533: Add canAdd functionality
     {
         if (error) {
             console.error(error, status);
@@ -409,9 +415,15 @@ function checkInputAndHighlightButtons(question) {
 
     if (!question.canAdd && numberMatched !== subStrings.length) {
         d3.select('#sendButton').classed('disabled', true);
+        d3.select('#sendButton').text('Send');
         return false;
     } else if (!!~nonWhiteSpace) {
         d3.select('#sendButton').classed('disabled', false);
+        d3.select('#sendButton').text('Send');
+        return true;
+    } else if (!~nonWhiteSpace && quesiton.allowUnknown) {
+        d3.select('#sendButton').classed('disabled', false);
+        d3.select('#sendButton').text('skip');
         return true;
     } else {
         return false;

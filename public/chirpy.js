@@ -17,18 +17,19 @@ function selectGoal(goal) {
             object: goal.objectInstance ? d3.select('#userInput').property('value')  : null
         };
         rapi.query(ourQuery, handleResponse);
+        closeAutoComplete();
         clearUserInput();
-
     };
 
     if (goal.subjectInstance === 'user provided' || goal.objectInstance === 'user provided') {
+        closeAutoComplete();
         clearUserInput();
         removeRainbirdThinking();
         removeAutoComplete();
         if (goal.subject) {
-            addRBChatLine(goal.subject + '?');
+            addRBChatLine('Which ' + goal.subject + '?');
         } else {
-            addRBChatLine(goal.object + '?');
+            addRBChatLine('Which ' + goal.object + '?');
         }
         d3.select('#sendButton').on('click', waitForUserProvided);
         d3.select('#userInput').on('keydown', function() {
@@ -43,11 +44,15 @@ function selectGoal(goal) {
             object: goal.objectInstance ? goal.objectInstance : null
         };
         rapi.query(ourQuery, handleResponse);
+        closeAutoComplete();
         clearUserInput();
     }
 }
 
 function start () {
+    d3.select('#sendButton').classed('disabled', true);
+    d3.select('#sendButton').text('Send');
+    d3.select('#userInput').on('keyup', function() {checkInputAndHighlightButtons('');});
     rapi.getAgentConfig( window.location.protocol + "//" + window.location.host + "/agent/" + getIDFromUrl() + "/config", function(error, agent, status)
     {
         if (error) {
@@ -167,7 +172,7 @@ function addRBChatLine (string) {
         .style('opacity', 0)
         .transition()
         .duration(100)
-        .style('opacity', 1)
+        .style('opacity', 1);
 
     return chatHolder
 }
@@ -175,6 +180,13 @@ function addRBChatLine (string) {
 function addQuestion (question) {
     addRBChatLine(question.prompt);
     d3.select('#userInput').on('keyup', function() {checkInputAndHighlightButtons(question);});
+    if (question.allowUnknown) {
+        d3.select('#sendButton').classed('disabled', false);
+        d3.select('#sendButton').text('Skip');
+    } else {
+        d3.select('#sendButton').classed('disabled', true);
+        d3.select('#sendButton').text('Send');
+    }
 
     d3.select('#userInput').on('keydown', function() {
         if (d3.event.key === 'Enter') {
@@ -337,35 +349,51 @@ function addQuestion (question) {
 function send(question, input) {
     var response = [];
     var userString = input ? input : d3.select('#userInput').property('value');
-    addUserChatLine(userString);
-
-    if (question.plural) {
-        var splitString = userString.split( /,\s*/ );
-        splitString.forEach(function(substring) {
-            if (substring !== '') {
-                response.push(
-                    {
-                        subject: question.type === 'Second Form Object' ? question.subject : substring,
-                        relationship: question.relationship,
-                        object: question.type === 'Second Form Object' ? substring : question.object,
-                        cf: 100
-                    }
-                )
-            }
+    var nonWhiteSpace = userString.search( /\S/ );
+    if (!~nonWhiteSpace) {
+        addUserChatLine('Skipped');
+        response.push({
+            subject: question.type === 'Second Form Object' ? question.subject : null,
+            relationship: question.relationship,
+            object: question.type === 'Second Form Object' ? null : question.object,
+            cf: 100,
+            unanswered: true
         });
     } else {
-        response.push(
-            {
-                subject: question.type === 'Second Form Object' ? question.subject : userString,
-                relationship: question.relationship,
-                object: question.type === 'Second Form Object' ? userString : question.object,
-                cf: 100
-            }
-        )
+        addUserChatLine(userString);
+        if (question.plural) {
+            var splitString = userString.split(/,\s*/);
+            splitString.forEach(function (substring) {
+                if (substring !== '') {
+                    response.push(
+                        {
+                            subject: question.type === 'Second Form Object' ? question.subject : substring,
+                            relationship: question.relationship,
+                            object: question.type === 'Second Form Object' ? substring : question.object,
+                            cf: 100
+                        }
+                    )
+                }
+            });
+        } else {
+            response.push(
+                {
+                    subject: question.type === 'Second Form Object' ? question.subject : userString,
+                    relationship: question.relationship,
+                    object: question.type === 'Second Form Object' ? userString : question.object,
+                    cf: 100
+                }
+            )
+        }
     }
+    closeAutoComplete();
     clearUserInput();
     removeResponseButtons();
     rapi.respond(response, handleResponse);
+}
+
+function closeAutoComplete() {
+    $('#userInput').autocomplete('close');
 }
 
 function checkInputForMatches() {
@@ -409,11 +437,19 @@ function checkInputAndHighlightButtons(question) {
 
     if (!question.canAdd && numberMatched !== subStrings.length) {
         d3.select('#sendButton').classed('disabled', true);
+        d3.select('#sendButton').text('Send');
         return false;
     } else if (!!~nonWhiteSpace) {
         d3.select('#sendButton').classed('disabled', false);
+        d3.select('#sendButton').text('Send');
+        return true;
+    } else if (!~nonWhiteSpace && question.allowUnknown) {
+        d3.select('#sendButton').classed('disabled', false);
+        d3.select('#sendButton').text('Skip');
         return true;
     } else {
+        d3.select('#sendButton').classed('disabled', true);
+        d3.select('#sendButton').text('Send');
         return false;
     }
 }
@@ -474,7 +510,7 @@ function showResults (results) {
     start();
 }
 
-function removeAutoComplete(autoCompleteNames) {
+function removeAutoComplete() {
     $( function() {
         $( "#userInput" )
             .on( "keydown", function( event ) {

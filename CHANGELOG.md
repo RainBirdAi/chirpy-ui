@@ -12,7 +12,8 @@ facing release notes.
 
 ## v1.1.0
 
-  *  [Fix] RB-553: Add canAdd functionality, stop enter button being usable when userInput is blank.
+  *  [Fix] RB-618: Add unknown support
+  *  [Fix] RB-553: Add canAdd functionality, stop enter button being usable when userInput in blank.
   *  [Fix] RB-604: Improve enter button functionality
   *  [Fix] RB-612: Fix goal text being ignored
 

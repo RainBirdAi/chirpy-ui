@@ -4,13 +4,67 @@
     start();
 })();
 
+function selectGoal(goal) {
+    rapi.currentGoal = goal;
+    addUserChatLine(goal.description);
+    removeResponseButtons();
+
+    var waitForUserProvided = function() {
+        addUserChatLine(d3.select('#userInput').property('value'));
+        var ourQuery = {
+            subject: goal.subjectInstance ? d3.select('#userInput').property('value') : null,
+            relationship: goal.rel,
+            object: goal.objectInstance ? d3.select('#userInput').property('value')  : null
+        };
+        rapi.query(ourQuery, handleResponse);
+        clearUserInput();
+
+    };
+
+    if (goal.subjectInstance === 'user provided' || goal.objectInstance === 'user provided') {
+        clearUserInput();
+        removeRainbirdThinking();
+        removeAutoComplete();
+        if (goal.subject) {
+            addRBChatLine(goal.subject + '?');
+        } else {
+            addRBChatLine(goal.object + '?');
+        }
+        d3.select('#sendButton').on('click', waitForUserProvided);
+        d3.select('#userInput').on('keydown', function() {
+            if (d3.event.key === 'Enter') {
+                waitForUserProvided();
+            }
+        });
+    } else {
+        var ourQuery = {
+            subject: goal.subjectInstance ? goal.subjectInstance : null,
+            relationship: goal.rel,
+            object: goal.objectInstance ? goal.objectInstance : null
+        };
+        rapi.query(ourQuery, handleResponse);
+        clearUserInput();
+    }
+}
+
 function start () {
-    d3.select('#userInput').on('keyup', checkInputAndHighlightButtons);
-    rapi.getAgentConfig( window.location.protocol + "//" + window.location.host + "/agent/" + getIDFromUrl() + "/config", function(agent, error, status)
+    rapi.getAgentConfig( window.location.protocol + "//" + window.location.host + "/agent/" + getIDFromUrl() + "/config", function(error, agent, status)
     {
         if (error) {
             console.error(error, status);
         } else {
+
+            d3.select('#userInput').on('keydown', function() {
+                if (d3.event.key === 'Enter') {
+                    agent.goals.some(function(goal) {
+                        if(goal.description === d3.select('#userInput').property('value')) {
+                            selectGoal(goal);
+                            return true;
+                        }
+                    });
+                }
+            });
+
             console.log(agent);
             rapi.sessionID = agent.contextId;
             addRBChatLine(agent.agentDescription);
@@ -23,34 +77,7 @@ function start () {
                     .classed('responseButton', true)
                     .text(goal.description)
                     .on('click', function() {
-                        addUserChatLine(goal.description);
-                        rapi.currentGoal = goal;
-                        removeResponseButtons();
-                        if (goal.subjectInstance === 'user provided' || goal.objectInstance === 'user provided') {
-                            if (goal.subject) {
-                                addRBChatLine(goal.subject + '?');
-                            } else {
-                                addRBChatLine(goal.object + '?');
-                            }
-                            d3.select('#sendButton').on('click', function() {
-                                addUserChatLine(d3.select('#userInput').property('value'));
-                                var ourQuery = {
-                                    subject: goal.subjectInstance ? d3.select('#userInput').property('value') : null,
-                                    relationship: goal.rel,
-                                    object: goal.objectInstance ? d3.select('#userInput').property('value')  : null
-                                };
-                                rapi.query(ourQuery, handleResponse);
-                                clearUserInput();
-                            });
-                            removeRainbirdThinking();
-                        } else {
-                            var ourQuery = {
-                                subject: goal.subjectInstance ? goal.subjectInstance : null,
-                                relationship: goal.rel,
-                                object: goal.objectInstance ? goal.objectInstance : null
-                            };
-                            rapi.query(ourQuery, handleResponse);
-                        }
+                        selectGoal(goal);
                     });
                 addSingularAutoComplete(autoComplete);
                 resizeAndScroll();
@@ -67,9 +94,11 @@ function getIDFromUrl() {
     return urlArray[urlArray.length-1];
 }
 
-function handleResponse(data) {
+function handleResponse(err, data) {
     removeRainbirdThinking();
-    if (data.question) {
+    if (err) {
+        addRBChatLine('Sorry, error processing your request');
+    } else if (data.question) {
         addQuestion(data.question);
     } else {
         showResults(data.result);
@@ -95,6 +124,7 @@ function removeResponseButtons () {
 
 function clearUserInput() {
     d3.select('#userInput').property('value', '');
+    $('#userInput').focus();
 }
 
 function addUserChatLine(text) {
@@ -126,8 +156,7 @@ function addRBChatLine (string) {
     var chatHolder = d3.select('.chatHolder').select('#innerRows')
         .append('div')
         .classed('chatLine', true);
-    //chatHolder.append('img')
-    //    .attr('src', 'images/icon.png');
+
     chatHolder
         .append('p')
         .classed('rbchat', true)
@@ -145,6 +174,22 @@ function addRBChatLine (string) {
 
 function addQuestion (question) {
     addRBChatLine(question.prompt);
+    d3.select('#userInput').on('keyup', function() {checkInputAndHighlightButtons(question);});
+
+    d3.select('#userInput').on('keydown', function() {
+        if (d3.event.key === 'Enter') {
+            if (checkInputAndHighlightButtons(question)) {
+                send(question);
+            } else {
+                d3.select('#userInput')
+                    .transition()
+                    .duration(200)
+                    .styleTween('margin-left', function() {
+                        return function(t) { return Math.sin(t*Math.PI*10)*10 + 'px'; }
+                    });
+            }
+        }
+    });
 
     var optionHolder = d3.select('.optionHolder');
 
@@ -281,9 +326,11 @@ function addQuestion (question) {
             addSingularAutoComplete(autoCompleteNames);
         }
     }
-    d3.select('#sendButton')  //lawrie todo check this is in the right place
+    d3.select('#sendButton') 
         .on('click', function() {
-            send(question);
+            if (checkInputAndHighlightButtons(question)) {
+                send(question);
+            }
         });
 }
 
@@ -329,14 +376,16 @@ function checkInputForMatches() {
         if (option.select('input').property('checked')) {
             d3.select('#userInput').property('value', d3.select('#userInput').property('value') + ', ' + option.text());
         }
-    })
+    });
 }
 
-function checkInputAndHighlightButtons() {
+function checkInputAndHighlightButtons(question) {
     var userInputText = d3.select('#userInput').property('value');
     var subStrings = userInputText.split( /,\s*/ );
+    var nonWhiteSpace = userInputText.search( /\S/ );
 
     var allOptions = d3.selectAll('.responseButton')[0];
+    var numberMatched = 0;
 
     allOptions.forEach(function(html) {
         var option = d3.select(html);
@@ -345,12 +394,28 @@ function checkInputAndHighlightButtons() {
             option.select('input')
                 .property('checked', true);
             option.classed('selectedLabel', true);
+            numberMatched++;
         } else {
             option.select('input')
                 .property('checked', false);
             option.classed('selectedLabel', false);
         }
     });
+    subStrings.forEach(function(subString) {
+        if(subString.length === 0) {
+            numberMatched++;
+        }
+    });
+
+    if (!question.canAdd && numberMatched !== subStrings.length) {
+        d3.select('#sendButton').classed('disabled', true);
+        return false;
+    } else if (!!~nonWhiteSpace) {
+        d3.select('#sendButton').classed('disabled', false);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function showResults (results) {
@@ -409,12 +474,41 @@ function showResults (results) {
     start();
 }
 
+function removeAutoComplete(autoCompleteNames) {
+    $( function() {
+        $( "#userInput" )
+            .on( "keydown", function( event ) {
+                if (event.keyCode === $.ui.keyCode.TAB) {
+                    event.preventDefault();
+                }
+            })
+            .autocomplete({
+                minLength: 1,
+                source: [],
+                select: function( event, ui ) {
+                    this.value = ui.item.value;
+                    return false;
+                },
+                position: { my: "left bottom", at: "left top", collision: "flip" }
+            });
+    });
+}
+
 function addSingularAutoComplete(autoCompleteNames) {
     $( function() {
         $( "#userInput" )
+            .on( "keydown", function( event ) {
+                if (event.keyCode === $.ui.keyCode.TAB) {
+                    event.preventDefault();
+                }
+            })
             .autocomplete({
                 minLength: 1,
                 source: autoCompleteNames,
+                select: function( event, ui ) {
+                    this.value = ui.item.value;
+                    return false;
+                },
                 position: { my: "left bottom", at: "left top", collision: "flip" }
             });
     });
@@ -432,8 +526,7 @@ function addPluralAutoComplete(autoCompleteNames) {
 
             $( "#userInput" )
                 .on( "keydown", function( event ) {
-                    if ( event.keyCode === $.ui.keyCode.TAB &&
-                        $( this ).autocomplete( "instance" ).menu.active ) {
+                    if (event.keyCode === $.ui.keyCode.TAB) {
                         event.preventDefault();
                     }
                 })
@@ -453,7 +546,8 @@ function addPluralAutoComplete(autoCompleteNames) {
                         terms.push( "" );
                         this.value = terms.join( ", " );
                         return false;
-                    }
+                    },
+                    position: { my: "left bottom", at: "left top", collision: "flip" }
                 });
         } );
     } );

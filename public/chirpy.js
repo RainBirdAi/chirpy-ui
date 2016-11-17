@@ -8,6 +8,7 @@ function selectGoal(goal) {
     rapi.currentGoal = goal;
     addUserChatLine(goal.description);
     removeResponseButtons();
+    toggleHeader(true);
 
     var waitForUserProvided = function() {
         addUserChatLine(d3.select('#userInput').property('value'));
@@ -49,10 +50,35 @@ function selectGoal(goal) {
     }
 }
 
+function toggleHeader(show) {
+    if (show) {
+        d3.select('#headerInner')
+            .transition()
+            .duration(100)
+            .style('opacity', 1);
+        d3.select('#headerText')
+            .text(rapi.currentGoal.description);
+    } else {
+        d3.select('#headerInner')
+            .transition()
+            .duration(100)
+            .style('opacity', 0);
+    }
+}
+
 function start () {
     d3.select('#sendButton').classed('disabled', true);
     d3.select('#sendButton').text('Send');
     d3.select('#userInput').on('keyup', function() {checkInputAndHighlightButtons('');});
+    d3.select('#resetButton').on('click', function() {
+        removeRainbirdThinking();
+        removeAutoComplete();
+        clearUserInput();
+        removeResponseButtons();
+        start();
+    });
+
+    toggleHeader(false);
     rapi.getAgentConfig( window.location.protocol + "//" + window.location.host + "/agent/" + getIDFromUrl() + "/config", function(error, agent, status)
     {
         if (error) {
@@ -112,7 +138,7 @@ function handleResponse(err, data) {
 function resizeAndScroll() {
     d3.select('#rows').style('height', function() {
         var height = $('body').height() - $('#user-inputs').height();
-        $('#rows').height(height-80);
+        $('#rows').height(height-80-45);
         $('#rows').animate({
                 scrollTop: $('#innerRows').height()-height+90},
             100,
@@ -359,7 +385,7 @@ function send(question, input) {
     var userString = input ? input : d3.select('#userInput').property('value');
     var nonWhiteSpace = userString.search( /\S/ );
     if (!~nonWhiteSpace) {
-        addUserChatLine('Skipped');
+        addUserChatLine('Skip');
         response.push({
             subject: question.type === 'Second Form Object' ? question.subject : null,
             relationship: question.relationship,

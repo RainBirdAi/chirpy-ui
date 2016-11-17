@@ -1,5 +1,6 @@
 body {
     font-weight: 400;
+    height: 100vh;
 }
 .chatHolder {
     background-color: #f7f7f9;

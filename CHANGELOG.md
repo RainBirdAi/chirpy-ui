@@ -12,6 +12,8 @@ facing release notes.
 
 ## v1.1.1
 
+  *  [Fix] RB-619: Limit number of response buttons shown
+  *  [Fix] RB-645: Fix box layout occasional overlap
   *  [Fix] RB-632: Remove initial dialogue line
 
 ## v1.1.0

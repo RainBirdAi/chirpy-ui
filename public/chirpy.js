@@ -72,7 +72,6 @@ function start () {
 
             console.log(agent);
             rapi.sessionID = agent.contextId;
-            addRBChatLine(agent.agentDescription);
             var autoComplete = [];
             agent.goals.forEach(function(goal) {
                 autoComplete.push(goal.description);

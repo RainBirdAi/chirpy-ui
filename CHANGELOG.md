@@ -10,10 +10,14 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v1.1.1
+
+  *  [Fix] RB-632: Remove initial dialogue line
+
 ## v1.1.0
 
   *  [Fix] RB-618: Add unknown support
-  *  [Fix] RB-553: Add canAdd functionality, stop enter button being usable when userInput in blank.
+  *  [Fix] RB-553: Add canAdd functionality, stop enter button being usable when userInput is blank.
   *  [Fix] RB-604: Improve enter button functionality
   *  [Fix] RB-612: Fix goal text being ignored
 

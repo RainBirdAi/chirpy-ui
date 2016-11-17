@@ -1,5 +1,6 @@
 body {
     font-weight: 400;
+    height: 100vh;
 }
 .chatHolder {
     background-color: #f7f7f9;
@@ -145,4 +146,22 @@ a {
 #rows {
     padding: 20px;
     overflow-y: scroll;
+}
+
+#header {
+    background: rgba(0,0,0,0.1);
+    padding: 10px 20px;
+    font-size: 18px;
+    color: rgba(0,0,0,0.65);
+    height: 45px;
+}
+
+#resetButton {
+    position: absolute;
+    right: 20px;
+    top: 5px;
+}
+
+#headerInner {
+    opacity: 0;
 }

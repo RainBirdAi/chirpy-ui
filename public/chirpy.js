@@ -8,6 +8,7 @@ function selectGoal(goal) {
     rapi.currentGoal = goal;
     addUserChatLine(goal.description);
     removeResponseButtons();
+    toggleHeader(true);
 
     var waitForUserProvided = function() {
         addUserChatLine(d3.select('#userInput').property('value'));
@@ -49,10 +50,36 @@ function selectGoal(goal) {
     }
 }
 
+function toggleHeader(show) {
+    if (show) {
+        d3.select('#headerInner')
+            .transition()
+            .duration(100)
+            .style('opacity', 1);
+        d3.select('#headerText')
+            .text(rapi.currentGoal.description);
+    } else {
+        d3.select('#headerInner')
+            .transition()
+            .duration(100)
+            .style('opacity', 0);
+    }
+}
+
 function start () {
     d3.select('#sendButton').classed('disabled', true);
     d3.select('#sendButton').text('Send');
     d3.select('#userInput').on('keyup', function() {checkInputAndHighlightButtons('');});
+
+    d3.select('#resetButton').on('click', function() {
+        removeRainbirdThinking();
+        removeAutoComplete();
+        clearUserInput();
+        removeResponseButtons();
+        start();
+    });
+
+    toggleHeader(false);
     rapi.getAgentConfig( window.location.protocol + "//" + window.location.host + "/agent/" + getIDFromUrl() + "/config", function(error, agent, status)
     {
         if (error) {
@@ -72,7 +99,6 @@ function start () {
 
             console.log(agent);
             rapi.sessionID = agent.contextId;
-            addRBChatLine(agent.agentDescription);
             var autoComplete = [];
             agent.goals.forEach(function(goal) {
                 autoComplete.push(goal.description);
@@ -85,8 +111,8 @@ function start () {
                         selectGoal(goal);
                     });
                 addSingularAutoComplete(autoComplete);
-                resizeAndScroll();
             });
+            resizeAndScroll();
         }
     });
 }
@@ -108,15 +134,15 @@ function handleResponse(err, data) {
     } else {
         showResults(data.result);
     }
-    resizeAndScroll();
 }
 
 function resizeAndScroll() {
     d3.select('#rows').style('height', function() {
-        var height = $('.chatHolder').height() - $('#user-inputs').height() - 40;
+        var height = $('body').height() - $('#user-inputs').height();
+        $('#rows').height(height-80-45);
         $('#rows').animate({
-                scrollTop: $('#innerRows').height()-height+50},
-            400,
+                scrollTop: $('#innerRows').height()-height+90},
+            100,
             "easeOutQuint"
         );
         return height;
@@ -125,6 +151,7 @@ function resizeAndScroll() {
 
 function removeResponseButtons () {
     d3.select('.optionHolder').selectAll('.responseButton').remove();
+    resizeAndScroll();
 }
 
 function clearUserInput() {
@@ -151,7 +178,12 @@ function addRainbirdThinking () {
         .append('div')
         .attr('id', 'loadingGIF')
         .append('img')
-        .attr('src', '/public/images/loadingGIF.gif');
+        .attr('src', '/public/images/loadingGIF.gif')
+        .style('opacity', 0)
+        .transition()
+        .delay(150)
+        .duration(100)
+        .style('opacity', 1);
 }
 function removeRainbirdThinking () {
     var chatHolder = d3.select('#loadingGIF').remove();
@@ -248,87 +280,89 @@ function addQuestion (question) {
         } else if(question.concepts) {
             question.concepts.forEach(function (conc, i) {  //todo refactor into own function
                 autoCompleteNames.push(conc.value);
-                if (question.plural) {
-                    var checkHolder = optionHolder
-                        .append('label')
-                        .classed('responseButton', true);
+                if (question.concepts.length < 10) {
+                    if (question.plural) {
+                        var checkHolder = optionHolder
+                            .append('label')
+                            .classed('responseButton', true);
 
-                    checkHolder
-                        .append('span')
-                        .text(conc.value);
-
-                    checkHolder
-                        .append('input')
-                        .attr('type', 'checkbox')
-                        .on('change', function () {
-                            checkHolder
-                                .classed('selectedLabel', checkHolder.select('input').property('checked'));
-                            if (checkHolder.select('input').property('checked')) {
-                                var seperator = '';
-                                if (d3.select('#userInput').property('value') !== '') {
-                                    seperator = ', ';
-                                }
-                                d3.select('#userInput').property('value', d3.select('#userInput').property('value') + seperator + conc.value)
-                            } else {
-                                var userString = d3.select('#userInput').property('value');
-                                var splitString = userString.split(/,\s*/);
-                                var indexOf = splitString.indexOf(conc.value);
-                                if (indexOf !== -1) {
-                                    splitString.splice(indexOf, 1);
-                                }
-                                if (splitString.length) {
-                                    splitString.forEach(function (subString, i) {
-                                        if (i === 0) {
-                                            d3.select('#userInput').property('value', splitString[0]);
-                                        } else {
-                                            d3.select('#userInput').property('value', d3.select('#userInput').property('value') + ', ' + subString);
-                                        }
-                                    })
-                                } else {
-                                    d3.select('#userInput').property('value', '');
-                                }
-
-                            }
-                        });
-                    if (conc.metadata && conc.metadata.en && conc.metadata.en[0] && conc.metadata.en[0].dataType === 'image') {
-                        console.log(conc.metadata.en[0].data + '\')');
                         checkHolder
-                            .append('div')
-                            .style('background-image', 'url(\'' + conc.metadata.en[0].data + '\')')
-                            .classed('multiChoiceImage', true);
+                            .append('span')
+                            .text(conc.value);
+
+                        checkHolder
+                            .append('input')
+                            .attr('type', 'checkbox')
+                            .on('change', function () {
+                                checkHolder
+                                    .classed('selectedLabel', checkHolder.select('input').property('checked'));
+                                if (checkHolder.select('input').property('checked')) {
+                                    var seperator = '';
+                                    if (d3.select('#userInput').property('value') !== '') {
+                                        seperator = ', ';
+                                    }
+                                    d3.select('#userInput').property('value', d3.select('#userInput').property('value') + seperator + conc.value)
+                                } else {
+                                    var userString = d3.select('#userInput').property('value');
+                                    var splitString = userString.split(/,\s*/);
+                                    var indexOf = splitString.indexOf(conc.value);
+                                    if (indexOf !== -1) {
+                                        splitString.splice(indexOf, 1);
+                                    }
+                                    if (splitString.length) {
+                                        splitString.forEach(function (subString, i) {
+                                            if (i === 0) {
+                                                d3.select('#userInput').property('value', splitString[0]);
+                                            } else {
+                                                d3.select('#userInput').property('value', d3.select('#userInput').property('value') + ', ' + subString);
+                                            }
+                                        })
+                                    } else {
+                                        d3.select('#userInput').property('value', '');
+                                    }
+
+                                }
+                            });
+                        if (conc.metadata && conc.metadata.en && conc.metadata.en[0] && conc.metadata.en[0].dataType === 'image') {
+                            console.log(conc.metadata.en[0].data + '\')');
+                            checkHolder
+                                .append('div')
+                                .style('background-image', 'url(\'' + conc.metadata.en[0].data + '\')')
+                                .classed('multiChoiceImage', true);
+                        }
+
+                        checkHolder
+                            .style('opacity', 0)
+                            .transition()
+                            .delay(i * 100)
+                            .duration(250)
+                            .style('opacity', 1);
+
+                    } else {
+                        var responseButton = optionHolder.append('div');
+
+                        responseButton
+                            .classed('responseButton', true)
+                            .text(conc.value)
+                            .datum(conc)
+                            .on('click', function () {
+                                    addUserChatLine(conc.value);
+                                    removeResponseButtons();
+                                    rapi.respond([{
+                                        subject: question.subject,
+                                        relationship: question.relationship,
+                                        object: conc.value,
+                                        cf: 100
+                                    }], handleResponse);
+                                }
+                            );
+                        responseButton
+                            .style('opacity', 0)
+                            .transition()
+                            .delay(i * 10)
+                            .duration(250)
+                            .style('opacity', 1);
                     }
-
-                    checkHolder
-                        .style('opacity', 0)
-                        .transition()
-                        .delay(i*100)
-                        .duration(250)
-                        .style('opacity', 1);
-
-                } else {
-                    var responseButton = optionHolder.append('div');
-
-                    responseButton
-                        .classed('responseButton', true)
-                        .text(conc.value)
-                        .datum(conc)
-                        .on('click', function () {
-                                addUserChatLine(conc.value);
-                                removeResponseButtons();
-                                rapi.respond([{
-                                    subject: question.subject,
-                                    relationship: question.relationship,
-                                    object: conc.value,
-                                    cf: 100
-                                }], handleResponse);
-                            }
-                        );
-                    responseButton
-                        .style('opacity', 0)
-                        .transition()
-                        .delay(i*10)
-                        .duration(250)
-                        .style('opacity', 1);
                 }
             });
         }
@@ -338,6 +372,7 @@ function addQuestion (question) {
             addSingularAutoComplete(autoCompleteNames);
         }
     }
+    resizeAndScroll();
     d3.select('#sendButton') 
         .on('click', function() {
             if (checkInputAndHighlightButtons(question)) {
@@ -351,7 +386,7 @@ function send(question, input) {
     var userString = input ? input : d3.select('#userInput').property('value');
     var nonWhiteSpace = userString.search( /\S/ );
     if (!~nonWhiteSpace) {
-        addUserChatLine('Skipped');
+        addUserChatLine('Skip');
         response.push({
             subject: question.type === 'Second Form Object' ? question.subject : null,
             relationship: question.relationship,
@@ -507,6 +542,7 @@ function showResults (results) {
     } else {
         addRBChatLine('Sorry I couldn\'t find an answer');
     }
+    resizeAndScroll();
     start();
 }
 

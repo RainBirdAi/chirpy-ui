@@ -11,16 +11,25 @@ facing release notes.
   * [Misc] Other items
 
 ## v1.1.0
+  
 
-  *  [Fix] RB-553: Add canAdd functionality, stop enter button being usable when userInput is blank.
-  *  [Fix] RB-618: Add unknown support
-  *  [Fix] RB-553: Add canAdd functionality, stop enter button being usable when userInput in blank.
-  *  [Fix] RB-604: Improve enter button functionality
-  *  [Fix] RB-612: Fix goal text being ignored
+## v1.0.1
+
+ *  [Fix] RB-639: Add reset button and header
+ *  [Fix] RB-619: Limit number of response buttons shown
+ *  [Fix] RB-645: Fix box layout occasional overlap
+ *  [Fix] RB-632: Remove initial dialogue line
 
 ## v1.0.0
 
-  * [Misc] Release
+ *  [Fix] RB-618: Add unknown support
+ *  [Fix] RB-553: Add canAdd functionality, stop enter button being usable when userInput is blank.
+ *  [Fix] RB-604: Improve enter button functionality
+ *  [Fix] RB-612: Fix goal text being ignored
+
+ ## v1.0.0
+
+   * [Misc] Release
 
 ## v0.0.13
 

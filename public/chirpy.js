@@ -1,5 +1,5 @@
 (function() {   //We serve this page wrapped in a div with the api and apiKey properties
-    //replace this with your own way of passing in the apikey and target url
+                //replace this with your own way of passing in the apikey and target url
     rapi.setYolandaURL(d3.select('#init').attr('api'));
     start();
 })();
@@ -67,6 +67,7 @@ function toggleHeader(show) {
 }
 
 function start () {
+    removeDatePicker();
     d3.select('#sendButton').classed('disabled', true);
     d3.select('#sendButton').text('Send');
     d3.select('#userInput').on('keyup', function() {checkInputAndHighlightButtons('');});
@@ -79,7 +80,7 @@ function start () {
     });
 
     toggleHeader(false);
-    rapi.getAgentConfig( window.location.protocol + "//" + window.location.host + "/agent/" + getIDFromUrl() + "/config", function(error, agent, status)
+    rapi.getAgentConfig( window.location.protocol + '//' + window.location.host + '/agent/' + getIDFromUrl() + '/config', function(error, agent, status)
     {
         if (error) {
             console.error(error, status);
@@ -142,7 +143,7 @@ function resizeAndScroll() {
         $('#rows').animate({
                 scrollTop: $('#innerRows').height()-height+90},
             100,
-            "easeOutQuint"
+            'easeOutQuint'
         );
         return height;
     });
@@ -208,9 +209,18 @@ function addRBChatLine (string) {
     return chatHolder
 }
 
+function removeDatePicker() {
+    d3.select( '#userInput').on('click', null);
+    $( '#userInput' ).datepicker('hide');
+    $( '#userInput' ).datepicker( 'destroy' );
+    d3.select('#userInput').classed('hasDatepicker', false);
+}
+
 function addQuestion (question) {
     addRBChatLine(question.prompt);
     d3.select('#userInput').on('keyup', function() {checkInputAndHighlightButtons(question);});
+    removeDatePicker();
+
     if (question.allowUnknown) {
         d3.select('#sendButton').classed('disabled', false);
         d3.select('#sendButton').text('Skip');
@@ -270,12 +280,12 @@ function addQuestion (question) {
             );
     } else if (!!~question.type.indexOf('Second Form')) {
         var autoCompleteNames = [];
-        $( '#userInput' ).datepicker( "destroy" );
-        d3.select('#userInput').classed('hasDatepicker', false);
         if (question.dataType === 'date') {
-            $( function() {
-                $( "#userInput" ).datepicker();
-            } );
+            $('#userInput').datepicker();
+            $('#userInput').datepicker('show');
+            d3.select( '#userInput').on('click', function() {
+                $( '#userInput').datepicker('show')
+            });
         } else if(question.concepts) {
             question.concepts.forEach(function (conc, i) {  //todo refactor into own function
                 autoCompleteNames.push(conc.value);
@@ -372,7 +382,7 @@ function addQuestion (question) {
         }
     }
     resizeAndScroll();
-    d3.select('#sendButton') 
+    d3.select('#sendButton')
         .on('click', function() {
             if (checkInputAndHighlightButtons(question)) {
                 send(question);
@@ -519,13 +529,13 @@ function showResults (results) {
                     .append('span')
                     .attr('class', 'glyphicon glyphicon-search')
                     .classed('whyAnalysisButton', true)
-                    .on("mouseover", function () {
+                    .on('mouseover', function () {
                         d3.select('#tooltiptext').transition().duration(500).style('opacity', 1);
                     })
-                    .on("mouseout", function () {
+                    .on('mouseout', function () {
                         d3.select('#tooltiptext').transition().duration(75).style('opacity', 0);
                     })
-                    .on("mousemove", function () {
+                    .on('mousemove', function () {
                         d3.select('#tooltiptext').style('top', d3.event.pageY + 'px');
                         d3.select('#tooltiptext').style('left', d3.event.pageX + 'px');
                     });
@@ -547,8 +557,8 @@ function showResults (results) {
 
 function removeAutoComplete() {
     $( function() {
-        $( "#userInput" )
-            .on( "keydown", function( event ) {
+        $( '#userInput' )
+            .on( 'keydown', function( event ) {
                 if (event.keyCode === $.ui.keyCode.TAB) {
                     event.preventDefault();
                 }
@@ -560,15 +570,15 @@ function removeAutoComplete() {
                     this.value = ui.item.value;
                     return false;
                 },
-                position: { my: "left bottom", at: "left top", collision: "flip" }
+                position: { my: 'left bottom', at: 'left top', collision: 'flip' }
             });
     });
 }
 
 function addSingularAutoComplete(autoCompleteNames) {
     $( function() {
-        $( "#userInput" )
-            .on( "keydown", function( event ) {
+        $( '#userInput' )
+            .on( 'keydown', function( event ) {
                 if (event.keyCode === $.ui.keyCode.TAB) {
                     event.preventDefault();
                 }
@@ -580,7 +590,7 @@ function addSingularAutoComplete(autoCompleteNames) {
                     this.value = ui.item.value;
                     return false;
                 },
-                position: { my: "left bottom", at: "left top", collision: "flip" }
+                position: { my: 'left bottom', at: 'left top', collision: 'flip' }
             });
     });
 }
@@ -595,8 +605,8 @@ function addPluralAutoComplete(autoCompleteNames) {
                 return split( term ).pop();
             }
 
-            $( "#userInput" )
-                .on( "keydown", function( event ) {
+            $( '#userInput' )
+                .on( 'keydown', function( event ) {
                     if (event.keyCode === $.ui.keyCode.TAB) {
                         event.preventDefault();
                     }
@@ -614,11 +624,11 @@ function addPluralAutoComplete(autoCompleteNames) {
                         var terms = split( this.value );
                         terms.pop();
                         terms.push( ui.item.value );
-                        terms.push( "" );
-                        this.value = terms.join( ", " );
+                        terms.push( '' );
+                        this.value = terms.join( ', ' );
                         return false;
                     },
-                    position: { my: "left bottom", at: "left top", collision: "flip" }
+                    position: { my: 'left bottom', at: 'left top', collision: 'flip' }
                 });
         } );
     } );

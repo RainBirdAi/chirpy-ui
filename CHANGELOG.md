@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v1.1.2
+
+  *  [Fix] RB-660: Auto show date picker
+
 ## v1.1.1
 
   *  [Fix] RB-639: Add reset button and header

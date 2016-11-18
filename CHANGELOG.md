@@ -10,29 +10,26 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
-## v1.1.2
+## v1.0.3
 
   *  [Fix] RB-661: Improve manual date entry
   *  [Fix] RB-660: Auto show date picker
   *  [Fix] RB-669: Fix layout issue
   *  [Fix] RB-670: Fix second form subject questions not always being answered correctly
 
-## v1.1.1
+## v1.0.1
 
   *  [Fix] RB-639: Add reset button and header
   *  [Fix] RB-619: Limit number of response buttons shown
   *  [Fix] RB-645: Fix box layout occasional overlap
   *  [Fix] RB-632: Remove initial dialogue line
 
-## v1.1.0
+## v1.0.0
 
   *  [Fix] RB-618: Add unknown support
   *  [Fix] RB-553: Add canAdd functionality, stop enter button being usable when userInput is blank.
   *  [Fix] RB-604: Improve enter button functionality
   *  [Fix] RB-612: Fix goal text being ignored
-
-## v1.0.0
-
   * [Misc] Release
 
 ## v0.0.13

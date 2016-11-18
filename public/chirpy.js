@@ -139,16 +139,13 @@ function handleResponse(err, data) {
 }
 
 function resizeAndScroll() {
-    d3.select('#rows').style('height', function() {
-        var height = $('body').height() - $('#user-inputs').height();
-        $('#rows').height(height-80-45);
-        $('#rows').animate({
-                scrollTop: $('#innerRows').height()-height+90},
-            100,
-            'easeOutQuint'
-        );
-        return height;
-    });
+    var height = $('body').height() - $('#user-inputs').height();
+    $('#rows').height(height-85-40);
+    $('#rows').animate({
+            scrollTop: $('#innerRows').height()-height+140},
+        100,
+        "easeOutQuint"
+    );
 }
 
 function removeResponseButtons () {
@@ -366,14 +363,7 @@ function addQuestion (question) {
                             .text(conc.value)
                             .datum(conc)
                             .on('click', function () {
-                                    addUserChatLine(conc.value);
-                                    removeResponseButtons();
-                                    rapi.respond([{
-                                        subject: question.subject,
-                                        relationship: question.relationship,
-                                        object: conc.value,
-                                        cf: 100
-                                    }], handleResponse);
+                                    send(question, conc.value);
                                 }
                             );
                         responseButton
@@ -445,6 +435,7 @@ function send(question, input) {
     closeAutoComplete();
     clearUserInput();
     removeResponseButtons();
+    resizeAndScroll();
     rapi.respond(response, handleResponse);
 }
 

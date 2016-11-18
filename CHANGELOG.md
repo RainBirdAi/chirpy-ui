@@ -12,6 +12,7 @@ facing release notes.
 
 ## v1.1.2
 
+  *  [Fix] RB-661: Improve manual date entry
   *  [Fix] RB-660: Auto show date picker
 
 ## v1.1.1

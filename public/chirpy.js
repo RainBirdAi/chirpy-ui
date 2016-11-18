@@ -33,8 +33,8 @@ function selectGoal(goal) {
             addRBChatLine('Which ' + goal.object + '?');
         }
         d3.select('#sendButton').on('click', waitForUserProvided);
-        d3.select('#userInput').on('keydown', function() {
-            if (d3.event.key === 'Enter') {
+        d3.select('#userInput').on('keyup', function() {
+            if (checkInputAndHighlightButtons({canAdd:true}) && d3.event.key === 'Enter') {
                 waitForUserProvided();
             }
         });
@@ -70,7 +70,9 @@ function start () {
     removeDatePicker();
     d3.select('#sendButton').classed('disabled', true);
     d3.select('#sendButton').text('Send');
-    d3.select('#userInput').on('keyup', function() {checkInputAndHighlightButtons('');});
+    d3.select('#userInput')
+        .attr('placeholder', '')
+        .on('keyup', function() {checkInputAndHighlightButtons('');});
     d3.select('#resetButton').on('click', function() {
         removeRainbirdThinking();
         removeAutoComplete();
@@ -80,7 +82,7 @@ function start () {
     });
 
     toggleHeader(false);
-    rapi.getAgentConfig( window.location.protocol + '//' + window.location.host + '/agent/' + getIDFromUrl() + '/config', function(error, agent, status)
+    rapi.getAgentConfig(window.location.protocol + '//' + window.location.host + '/agent/' + getIDFromUrl() + '/config', function(error, agent, status)
     {
         if (error) {
             console.error(error, status);
@@ -281,11 +283,20 @@ function addQuestion (question) {
     } else if (!!~question.type.indexOf('Second Form')) {
         var autoCompleteNames = [];
         if (question.dataType === 'date') {
-            $('#userInput').datepicker();
+            $('#userInput').datepicker({
+                onSelect:function(){
+                    checkInputAndHighlightButtons({canAdd:true});
+                    send(question);
+                },
+                dateFormat: "yy/mm/dd"
+            });
             $('#userInput').datepicker('show');
             d3.select( '#userInput').on('click', function() {
                 $( '#userInput').datepicker('show')
             });
+            d3.select('#userInput')
+                .attr('placeholder', 'YYYY/MM/DD')
+
         } else if(question.concepts) {
             question.concepts.forEach(function (conc, i) {  //todo refactor into own function
                 autoCompleteNames.push(conc.value);
@@ -391,6 +402,7 @@ function addQuestion (question) {
 }
 
 function send(question, input) {
+    removeDatePicker();
     var response = [];
     var userString = input ? input : d3.select('#userInput').property('value');
     var nonWhiteSpace = userString.search( /\S/ );

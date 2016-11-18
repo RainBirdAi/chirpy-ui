@@ -14,6 +14,8 @@ facing release notes.
 
   *  [Fix] RB-661: Improve manual date entry
   *  [Fix] RB-660: Auto show date picker
+  *  [Fix] RB-669: Fix layout issue
+  *  [Fix] RB-670: Fix second form subject questions not always being answered correctly
 
 ## v1.1.1
 

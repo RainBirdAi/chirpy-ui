@@ -16,6 +16,7 @@ facing release notes.
   *  [Fix] RB-691: Stop date picking showing automatically
   *  [Fix] RB-675: Fix unspecified second form object questions asking the wrong question
   *  [Fix] RB-638: Fix send button being clickable at wrong time
+  *  [Fix] RB-677: Fix singular questions highlighting multiple response buttons if the text matched
 
 ## v1.0.3
 

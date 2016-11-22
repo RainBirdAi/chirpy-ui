@@ -80,6 +80,8 @@ function start () {
         removeResponseButtons();
         start();
     });
+    d3.select('#sendButton').on('click', null);
+    d3.select('#userInput').on('keydown', null);
 
     toggleHeader(false);
     rapi.getAgentConfig(window.location.protocol + '//' + window.location.host + '/agent/' + getIDFromUrl() + '/config', function(error, agent, status) {
@@ -96,6 +98,14 @@ function start () {
                         }
                     });
                 }
+            });
+            d3.select('#sendButton').on('click', function() {
+                agent.goals.some(function(goal) {
+                    if(goal.description === d3.select('#userInput').property('value')) {
+                        selectGoal(goal);
+                        return true;
+                    }
+                });
             });
 
             console.log(agent);

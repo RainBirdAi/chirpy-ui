@@ -27,7 +27,7 @@ function selectGoal(goal) {
         clearUserInput();
         removeRainbirdThinking();
         removeAutoComplete();
-        if (goal.subject) {
+        if (goal.subjectInstance) {
             addRBChatLine('Which ' + goal.subject + '?');
         } else {
             addRBChatLine('Which ' + goal.object + '?');
@@ -82,8 +82,7 @@ function start () {
     });
 
     toggleHeader(false);
-    rapi.getAgentConfig(window.location.protocol + '//' + window.location.host + '/agent/' + getIDFromUrl() + '/config', function(error, agent, status)
-    {
+    rapi.getAgentConfig(window.location.protocol + '//' + window.location.host + '/agent/' + getIDFromUrl() + '/config', function(error, agent, status) {
         if (error) {
             console.error(error, status);
         } else {

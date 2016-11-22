@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v1.0.4
+
+  *  [Fix] RB-675: Fix unspecified second form object questions asking the wrong question
+
 ## v1.0.3
 
   *  [Fix] RB-661: Improve manual date entry

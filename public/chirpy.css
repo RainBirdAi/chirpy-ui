@@ -32,7 +32,7 @@ body {
     margin-right: 100px;
     margin-left: 15px;
     color: white;
-    background: #ef0f4f;
+    background: #19adee;
     border-radius: 5px;
     background: linear-gradient(top, #f9d835, #f3961c);
 }
@@ -42,7 +42,7 @@ body {
     margin-left: 15px;
     margin-bottom: -3px;
     color: white;
-    background: #ef0f4f;
+    background: #19adee;
     border-radius: 5px 5px 5px 2px;
     background: linear-gradient(top, #f9d835, #f3961c);
 }
@@ -65,7 +65,7 @@ body {
     width: 0;
     border-width: 0px 10px 10px;
     border-style: solid;
-    border-color: #ef0f4f transparent;
+    border-color: #19adee transparent;
 }
 .triangle-isosceles-right:after {
     content: "";
@@ -79,7 +79,7 @@ body {
     border-color: #8c8c8c transparent;
 }
 .selectedLabel {
-    background-color: #ef0f4f;
+    background-color: #19adee;
 }
 .selectedLabel > span {
     font-weight: 700;

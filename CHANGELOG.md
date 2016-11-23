@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v1.0.5
+
+  *  [Fix] RB-588: Add hint on how to start an interaction
+
 ## v1.0.4
 
   *  [Fix] RB-692: Set focus to user input on load

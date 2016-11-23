@@ -305,7 +305,6 @@ function addQuestion (question) {
                 },
                 dateFormat: "yy/mm/dd"
             });
-            $('#userInput').datepicker('show');
             d3.select( '#userInput').on('click', function() {
                 $( '#userInput').datepicker('show')
             });

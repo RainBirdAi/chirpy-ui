@@ -61,7 +61,7 @@ function toggleHeader(show) {
             .duration(100)
             .style('opacity', 1);
         d3.select('#headerText')
-            .text(rapi.currentGoal.description);  
+            .text(rapi.currentGoal.description);
         d3.select('#resetButton')
             .style('cursor', 'pointer');
     } else {
@@ -512,17 +512,6 @@ function closeAutoComplete() {
     $('#userInput').autocomplete('close');
 }
 
-function checkInputForMatches() {
-    var allOptions = d3.selectAll('.responseButton')[0];
-
-    allOptions.forEach(function(html) {
-        var option = d3.select(html);
-        if (option.select('input').property('checked')) {
-            d3.select('#userInput').property('value', d3.select('#userInput').property('value') + ', ' + option.text());
-        }
-    });
-}
-
 function checkInputAndHighlightButtons(question) {
     var userInputText = d3.select('#userInput').property('value');
     var subStrings;
@@ -708,7 +697,7 @@ function addPluralAutoComplete(autoCompleteNames) {
             }
 
             $( '#userInput' )
-                .on( 'keyup', function( event ) {
+                .on( 'keydown', function( event ) {
                     if (event.keyCode === $.ui.keyCode.TAB) {
                         event.preventDefault();
                     }

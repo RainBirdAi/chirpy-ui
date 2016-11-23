@@ -61,7 +61,7 @@ function toggleHeader(show) {
             .duration(100)
             .style('opacity', 1);
         d3.select('#headerText')
-            .text(rapi.currentGoal.description);
+            .text(rapi.currentGoal.description);  
         d3.select('#resetButton')
             .style('cursor', 'pointer');
     } else {

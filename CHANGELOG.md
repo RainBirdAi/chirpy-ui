@@ -14,6 +14,7 @@ facing release notes.
 
   *  [Fix] RB-716: Add calendar icon
   *  [Fix] RB-697: Add restriction to number questions
+  *  [Fix] RB-553: Fix canAdd not always working as expected
   *  [Fix] RB-588: Add hint on how to start an interaction
 
 ## v1.0.4

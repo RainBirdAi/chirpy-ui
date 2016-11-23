@@ -12,6 +12,8 @@ function selectGoal(goal) {
     toggleHeader(true);
 
     var waitForUserProvided = function() {
+        d3.select('#userInput')
+            .attr('placeholder', '');
         addUserChatLine(d3.select('#userInput').property('value'));
         var ourQuery = {
             subject: goal.subjectInstance ? d3.select('#userInput').property('value') : null,
@@ -79,7 +81,7 @@ function start () {
     d3.select('#sendButton').classed('disabled', true);
     d3.select('#sendButton').text('Send');
     d3.select('#userInput')
-        .attr('placeholder', '')
+        .attr('placeholder', 'Type or select a question')
         .on('keyup', function() {checkInputAndHighlightButtons('');});
     d3.select('#resetButton').on('click', function() {
         removeRainbirdThinking();
@@ -238,6 +240,8 @@ function addQuestion (question) {
     addRBChatLine(question.prompt);
     d3.select('#userInput').on('keyup', function() {checkInputAndHighlightButtons(question);});
     removeDatePicker();
+    d3.select('#userInput')
+        .attr('placeholder', '');
 
     if (question.allowUnknown) {
         d3.select('#sendButton').classed('disabled', false);

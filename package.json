@@ -1,6 +1,6 @@
 {
   "name": "chirpy-ui",
-  "version": "1.1.0",
+  "version": "1.0.5",
   "private": true,
   "scripts": {
     "start": "nodejs test/testServer.js",

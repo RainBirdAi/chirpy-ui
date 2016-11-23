@@ -48,6 +48,7 @@ function selectGoal(goal) {
         closeAutoComplete();
         clearUserInput();
     }
+    resizeAndScroll();
 }
 
 function toggleHeader(show) {
@@ -58,11 +59,17 @@ function toggleHeader(show) {
             .style('opacity', 1);
         d3.select('#headerText')
             .text(rapi.currentGoal.description);
+        d3.select('#resetButton')
+            .style('cursor', 'pointer');
     } else {
         d3.select('#headerInner')
             .transition()
             .duration(100)
             .style('opacity', 0);
+        d3.select('#headerText')
+            .text('');
+        d3.select('#resetButton')
+            .style('cursor', 'default');
     }
 }
 
@@ -149,7 +156,9 @@ function handleResponse(err, data) {
 
 function resizeAndScroll() {
     var height = $('body').height() - $('#user-inputs').height();
-    $('#rows').height(height-85-40);
+    var headerHeight = $('#header').height()+20;
+    console.log('height', headerHeight);
+    $('#rows').height(height-80-headerHeight );
     $('#rows').animate({
             scrollTop: $('#innerRows').height()-height+140},
         100,

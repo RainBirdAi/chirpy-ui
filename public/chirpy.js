@@ -423,30 +423,41 @@ function send(question, input) {
             unanswered: true
         });
     } else {
-        addUserChatLine(userString);
-        if (question.plural) {
-            var splitString = userString.split(/,\s*/);
-            splitString.forEach(function (substring) {
-                if (substring !== '') {
-                    response.push(
-                        {
-                            subject: question.type === 'Second Form Object' ? question.subject : substring,
-                            relationship: question.relationship,
-                            object: question.type === 'Second Form Object' ? substring : question.object,
-                            cf: 100
-                        }
-                    )
-                }
-            });
+        if (question.type === 'First Form') {
+            addUserChatLine(userString);
+            response.push({
+                subject: question.subject ,
+                relationship: question.relationship,
+                object: question.object,
+                cf: 100,
+                answer: userString
+            })
         } else {
-            response.push(
-                {
-                    subject: question.type === 'Second Form Object' ? question.subject : userString,
-                    relationship: question.relationship,
-                    object: question.type === 'Second Form Object' ? userString : question.object,
-                    cf: 100
-                }
-            )
+            addUserChatLine(userString);
+            if (question.plural) {
+                var splitString = userString.split(/,\s*/);
+                splitString.forEach(function (substring) {
+                    if (substring !== '') {
+                        response.push(
+                            {
+                                subject: question.type === 'Second Form Object' ? question.subject : substring,
+                                relationship: question.relationship,
+                                object: question.type === 'Second Form Object' ? substring : question.object,
+                                cf: 100
+                            }
+                        )
+                    }
+                });
+            } else {
+                response.push(
+                    {
+                        subject: question.type === 'Second Form Object' ? question.subject : userString,
+                        relationship: question.relationship,
+                        object: question.type === 'Second Form Object' ? userString : question.object,
+                        cf: 100
+                    }
+                )
+            }
         }
     }
     closeAutoComplete();
@@ -473,16 +484,26 @@ function checkInputForMatches() {
 
 function checkInputAndHighlightButtons(question) {
     var userInputText = d3.select('#userInput').property('value');
-    var subStrings = userInputText.split( /,\s*/ );
-    var nonWhiteSpace = userInputText.search( /\S/ );
-
-    var allOptions = d3.selectAll('.responseButton')[0];
+    var subStrings;
     var numberMatched = 0;
+    var nonWhiteSpace = userInputText.search( /\S/ );
+    var allOptions = d3.selectAll('.responseButton')[0];
+
+    if (question.plural) {
+        subStrings = userInputText.split(/,\s*/);
+        subStrings.forEach(function(subString) {
+            if(subString.length === 0) {
+                numberMatched++;
+            }
+        });
+    } else {
+        subStrings = userInputText.replace(/\s+$/, '');
+    }
 
     allOptions.forEach(function(html) {
         var option = d3.select(html);
-
-        if (!!~subStrings.indexOf(option.text())) {
+        if ( (question.plural && !!~subStrings.indexOf(option.text())) ||
+            (typeof subStrings === 'string' && option.text()=== subStrings) ) {
             option.select('input')
                 .property('checked', true);
             option.classed('selectedLabel', true);
@@ -491,11 +512,6 @@ function checkInputAndHighlightButtons(question) {
             option.select('input')
                 .property('checked', false);
             option.classed('selectedLabel', false);
-        }
-    });
-    subStrings.forEach(function(subString) {
-        if(subString.length === 0) {
-            numberMatched++;
         }
     });
 

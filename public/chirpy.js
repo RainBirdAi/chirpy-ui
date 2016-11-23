@@ -2,6 +2,7 @@
                 //replace this with your own way of passing in the apikey and target url
     rapi.setYolandaURL(d3.select('#init').attr('api'));
     start();
+    $('#userInput').focus();
 })();
 
 function selectGoal(goal) {

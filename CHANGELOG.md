@@ -12,6 +12,7 @@ facing release notes.
 
 ## v1.0.4
 
+  *  [Fix] RB-692: Set focus to user input on load
   *  [Fix] RB-690: Fix long goal descriptions being overlapped by reset button
   *  [Fix] RB-675: Fix unspecified second form object questions asking the wrong question
   *  [Fix] RB-638: Fix send button being clickable at wrong time

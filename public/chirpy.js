@@ -160,7 +160,6 @@ function handleResponse(err, data) {
 function resizeAndScroll() {
     var height = $('body').height() - $('#user-inputs').height();
     var headerHeight = $('#header').height()+20;
-    console.log('height', headerHeight);
     $('#rows').height(height-80-headerHeight );
     $('#rows').animate({
             scrollTop: $('#innerRows').height()-height+140},
@@ -175,7 +174,9 @@ function removeResponseButtons () {
 }
 
 function clearUserInput() {
-    d3.select('#userInput').property('value', '');
+    d3.select('#userInput')
+        .property('value', '')
+        .on('keyup', null);
     $('#userInput').focus();
 }
 
@@ -325,7 +326,8 @@ function addQuestion (question) {
             });
             d3.select('#userInput')
                 .attr('placeholder', 'YYYY/MM/DD')
-
+        } else if(question.dataType === 'number') {
+            restrictInputToNumbersOnly(question);
         } else if(question.concepts) {
             question.concepts.forEach(function (conc, i) {  //todo refactor into own function
                 autoCompleteNames.push(conc.value);
@@ -373,7 +375,6 @@ function addQuestion (question) {
                                 }
                             });
                         if (conc.metadata && conc.metadata.en && conc.metadata.en[0] && conc.metadata.en[0].dataType === 'image') {
-                            console.log(conc.metadata.en[0].data + '\')');
                             checkHolder
                                 .append('div')
                                 .style('background-image', 'url(\'' + conc.metadata.en[0].data + '\')')
@@ -421,6 +422,31 @@ function addQuestion (question) {
                 send(question);
             }
         });
+}
+
+function restrictInputToNumbersOnly(question) {
+    d3.select("#userInput").on('keydown', function () {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if (d3.event.key === 'Enter') {
+            send(question);
+        }
+        if ($.inArray(d3.event.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                // Allow: Ctrl+A
+            (d3.event.keyCode == 65 && (d3.event.ctrlKey === true || d3.event.metaKey)) ||
+                // Allow: Ctrl+C
+            (d3.event.keyCode == 67 && (d3.event.ctrlKey === true || d3.event.metaKey)) ||
+                // Allow: Ctrl+X
+            (d3.event.keyCode == 88 && (d3.event.ctrlKey === true || d3.event.metaKey)) ||
+                // Allow: home, end, left, right
+            (d3.event.keyCode >= 35 && d3.event.keyCode <= 39)) {
+            // let it happen, don't do anything
+            return;
+        }
+        // Ensure that it is a number
+        if ((d3.event.keyCode < 48 || d3.event.keyCode > 57)) {
+            d3.event.preventDefault();
+        }
+    });
 }
 
 function send(question, input) {

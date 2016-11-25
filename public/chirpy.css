@@ -166,3 +166,12 @@ a {
     opacity: 0;
     margin-right: 50px;
 }
+
+.dateIcon {
+    position: absolute;
+    right: 67px;
+    z-index: 20;
+    top: 9px;
+    font-size: 17px;
+    color: rgb(76, 76, 76);
+}

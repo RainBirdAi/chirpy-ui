@@ -68,7 +68,7 @@ app.post('/:id/query', function(req, res) {
             response = {
                 "question": {
                     "subject": "Ben",
-                    "dataType": "string",
+                    "dataType": "date",
                     "relationship": "lives in",
                     "type": "Second Form Object",
                     "plural": false,

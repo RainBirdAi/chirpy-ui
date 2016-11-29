@@ -37,7 +37,7 @@ function selectGoal(goal) {
         }
         d3.select('#sendButton').on('click', waitForUserProvided);
         d3.select('#userInput').on('keyup', function() {
-            if (checkInputAndHighlightButtons({canAdd:true}) && d3.event.key === 'Enter') {
+            if (checkInputAndHighlightButtons({canAdd:true, allowUnknown:false}) && d3.event.key === 'Enter') {
                 waitForUserProvided();
             }
         });
@@ -81,8 +81,7 @@ function start () {
     d3.select('#sendButton').classed('disabled', true);
     d3.select('#sendButton').text('Send');
     d3.select('#userInput')
-        .attr('placeholder', 'Type or select a question')
-        .on('keyup', function() {checkInputAndHighlightButtons('');});
+        .attr('placeholder', 'Type or select a question');
     d3.select('#resetButton').on('click', function() {
         removeRainbirdThinking();
         removeAutoComplete();
@@ -91,15 +90,15 @@ function start () {
         start();
     });
     d3.select('#sendButton').on('click', null);
-    d3.select('#userInput').on('keydown', null);
+    d3.select('#userInput').on('keyup', null);
 
     toggleHeader(false);
     rapi.getAgentConfig(window.location.protocol + '//' + window.location.host + '/agent/' + getIDFromUrl() + '/config', function(error, agent, status) {
         if (error) {
             console.error(error, status);
         } else {
-
-            d3.select('#userInput').on('keydown', function() {
+            d3.select('#userInput').on('keyup', function() {
+                checkInputAndHighlightButtons({canAdd:false, goals:agent.goals});
                 if (d3.event.key === 'Enter') {
                     agent.goals.some(function(goal) {
                         if(goal.description === d3.select('#userInput').property('value')) {
@@ -244,7 +243,6 @@ function removeDatePicker() {
 
 function addQuestion (question) {
     addRBChatLine(question.prompt);
-    d3.select('#userInput').on('keyup', function() {checkInputAndHighlightButtons(question);});
     removeDatePicker();
     d3.select('#userInput')
         .attr('placeholder', '');
@@ -257,7 +255,7 @@ function addQuestion (question) {
         d3.select('#sendButton').text('Send');
     }
 
-    d3.select('#userInput').on('keydown', function() {
+    d3.select('#userInput').on('keyup', function() {
         if (d3.event.key === 'Enter') {
             if (checkInputAndHighlightButtons(question)) {
                 send(question);
@@ -269,6 +267,8 @@ function addQuestion (question) {
                         return function(t) { return Math.sin(t*Math.PI*10)*10 + 'px'; }
                     });
             }
+        } else {
+            checkInputAndHighlightButtons(question);
         }
     });
 
@@ -527,11 +527,13 @@ function checkInputAndHighlightButtons(question) {
     var userInputText = d3.select('#userInput').property('value');
     var subStrings;
     var numberMatched = 0;
+    var targetNumberMatched = 0;
     var nonWhiteSpace = userInputText.search( /\S/ );
     var allOptions = d3.selectAll('.responseButton')[0];
 
     if (question.plural) {
         subStrings = userInputText.split(/,\s*/);
+        targetNumberMatched = subStrings.length;
         subStrings.forEach(function(subString) {
             if(subString.length === 0) {
                 numberMatched++;
@@ -539,6 +541,7 @@ function checkInputAndHighlightButtons(question) {
         });
     } else {
         subStrings = userInputText.replace(/\s+$/, '');
+        targetNumberMatched = 1;
     }
 
     allOptions.forEach(function(html) {
@@ -548,7 +551,6 @@ function checkInputAndHighlightButtons(question) {
             option.select('input')
                 .property('checked', true);
             option.classed('selectedLabel', true);
-            numberMatched++;
         } else {
             option.select('input')
                 .property('checked', false);
@@ -556,7 +558,30 @@ function checkInputAndHighlightButtons(question) {
         }
     });
 
-    if (!question.canAdd && numberMatched !== subStrings.length) {
+    if (question.concepts) {
+        question.concepts.forEach(function(concept) {
+            if(typeof subStrings === 'string') {
+                if (concept.value === subStrings) {
+                    numberMatched = 1;
+                }
+            } else {
+                subStrings.forEach(function (subString) {
+                    if (concept.value === subString) {
+                        numberMatched++;
+                    }
+                });
+            }
+        });
+    }
+    if (question.goals) {
+        question.goals.forEach(function(goal) {
+            if (goal.description === subStrings) {
+                numberMatched = 1;
+            }
+        });
+    }
+
+    if (!question.canAdd && numberMatched !== targetNumberMatched) {
         d3.select('#sendButton').classed('disabled', true);
         d3.select('#sendButton').text('Send');
         return false;
@@ -635,7 +660,7 @@ function showResults (results) {
 function removeAutoComplete() {
     $( function() {
         $( '#userInput' )
-            .on( 'keydown', function( event ) {
+            .on( 'keyup', function( event ) {
                 if (event.keyCode === $.ui.keyCode.TAB) {
                     event.preventDefault();
                 }
@@ -655,7 +680,7 @@ function removeAutoComplete() {
 function addSingularAutoComplete(autoCompleteNames) {
     $( function() {
         $( '#userInput' )
-            .on( 'keydown', function( event ) {
+            .on( 'keyup', function( event ) {
                 if (event.keyCode === $.ui.keyCode.TAB) {
                     event.preventDefault();
                 }
@@ -683,7 +708,7 @@ function addPluralAutoComplete(autoCompleteNames) {
             }
 
             $( '#userInput' )
-                .on( 'keydown', function( event ) {
+                .on( 'keyup', function( event ) {
                     if (event.keyCode === $.ui.keyCode.TAB) {
                         event.preventDefault();
                     }

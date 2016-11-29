@@ -234,6 +234,11 @@ function removeDatePicker() {
     $( '#userInput' ).datepicker('hide');
     $( '#userInput' ).datepicker( 'destroy' );
     d3.select('#userInput').classed('hasDatepicker', false);
+
+    d3.select('#user-inputs')
+        .select('.input-group')
+        .select('.dateIcon')
+        .remove();
 }
 
 function addQuestion (question) {
@@ -303,6 +308,11 @@ function addQuestion (question) {
     } else if (!!~question.type.indexOf('Second Form')) {
         var autoCompleteNames = [];
         if (question.dataType === 'date') {
+            d3.select('#user-inputs')
+                .select('.input-group')
+                .append('span')
+                .attr('class', 'dateIcon glyphicon glyphicon-calendar');
+
             $('#userInput').datepicker({
                 onSelect:function(){
                     checkInputAndHighlightButtons({canAdd:true});

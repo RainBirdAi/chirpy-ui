@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v1.0.6
+
+  *  [Fix] RB-588: Change wording of goal hint
+
 ## v1.0.5
 
   *  [Fix] RB-716: Add calendar icon

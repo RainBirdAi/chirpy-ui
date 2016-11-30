@@ -30,6 +30,7 @@ function selectGoal(goal) {
         clearUserInput();
         removeRainbirdThinking();
         removeAutoComplete();
+        d3.select('#userInput').attr('placeholder', '');
         if (goal.subjectInstance) {
             addRBChatLine('Which ' + goal.subject + '?');
         } else {
@@ -81,7 +82,7 @@ function start () {
     d3.select('#sendButton').classed('disabled', true);
     d3.select('#sendButton').text('Send');
     d3.select('#userInput')
-        .attr('placeholder', 'Type or select a question');
+        .attr('placeholder', 'Type or select a question you\'d like to ask');
     d3.select('#resetButton').on('click', function() {
         removeRainbirdThinking();
         removeAutoComplete();

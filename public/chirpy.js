@@ -244,6 +244,7 @@ function removeDatePicker() {
 
 function addQuestion (question) {
     addRBChatLine(question.prompt);
+    removeInputRestriction();
     removeDatePicker();
     d3.select('#userInput')
         .attr('placeholder', '');
@@ -423,6 +424,10 @@ function addQuestion (question) {
                 send(question);
             }
         });
+}
+
+function removeInputRestriction() {
+    d3.select('#userInput').on('keydown', null);
 }
 
 function restrictInputToNumbersOnly(question) {
@@ -681,7 +686,7 @@ function removeAutoComplete() {
 function addSingularAutoComplete(autoCompleteNames) {
     $( function() {
         $( '#userInput' )
-            .on( 'keyup', function( event ) {
+            .on( 'keydown', function( event ) {
                 if (event.keyCode === $.ui.keyCode.TAB) {
                     event.preventDefault();
                 }
@@ -709,7 +714,7 @@ function addPluralAutoComplete(autoCompleteNames) {
             }
 
             $( '#userInput' )
-                .on( 'keyup', function( event ) {
+                .on( 'keydown', function( event ) {
                     if (event.keyCode === $.ui.keyCode.TAB) {
                         event.preventDefault();
                     }

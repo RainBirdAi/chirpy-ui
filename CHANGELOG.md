@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v1.0.7
+
+  *  [Fix] RB-697: Fix number input restriction staying
+
 ## v1.0.6
 
   *  [Fix] RB-588: Change wording of goal hint

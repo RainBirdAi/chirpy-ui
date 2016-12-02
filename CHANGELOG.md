@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v1.1.0
+
+  *  [Fix] RB-597: Change why analysis icon
+
 ## v1.0.7
 
   *  [Fix] RB-697: Fix number input restriction staying

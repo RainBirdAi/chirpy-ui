@@ -1,3 +1,21 @@
+<script>
+    function sendCoverage() {
+        console.log('coverage', window.__coverage__);
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:8079/coverage/client',
+            contentType: "application/json",
+            data: JSON.stringify(window.__coverage__),
+            success: function (agent) {
+                console.log('success');
+            },
+            error: function (data, status) {
+                console.error(data)
+            }
+        });
+    }
+</script>
 <div id="init" api="<%= api %>">
     <% include ../public/chirpy.html %>
 </div>
+<button id="sendCoverage" onclick="sendCoverage()" style="position: absolute;">CLICK!</button>

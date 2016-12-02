@@ -15,8 +15,10 @@
     "request": "2.74.x"
   },
   "devDependencies": {
+    "webdriverio": "latest",
     "wdio-dot-reporter": "0.0.6",
-    "wdio-mocha-framework": "^0.5.4",
-    "wdio-phantomjs-service": "^0.2.2"
+    "wdio-mocha-framework": "0.5.4",
+    "wdio-phantomjs-service": "0.2.2",
+    "istanbul-middleware": "0.2.2"
   }
 }

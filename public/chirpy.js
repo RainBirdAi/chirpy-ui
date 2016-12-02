@@ -635,7 +635,7 @@ function showResults (results) {
                         '/components/rainbird-analysis-ui/whyAnalysis.html?id=' + result.factID + '?api=' + rapi.yolandaUrl)
                     .attr('target', '_blank')
                     .append('span')
-                    .attr('class', 'glyphicon glyphicon-search')
+                    .attr('class', 'glyphicon glyphicon-info-sign')
                     .classed('whyAnalysisButton', true)
                     .on('mouseover', function () {
                         d3.select('#tooltiptext').transition().duration(500).style('opacity', 1);

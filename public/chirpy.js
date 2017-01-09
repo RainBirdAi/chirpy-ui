@@ -79,6 +79,7 @@ function toggleHeader(show) {
 
 function start () {
     removeDatePicker();
+    removeInputRestriction();
     d3.select('#sendButton').classed('disabled', true);
     d3.select('#sendButton').text('Send');
     d3.select('#userInput')

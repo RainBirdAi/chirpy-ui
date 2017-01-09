@@ -102,6 +102,27 @@ app.get('/agent/:id/config', function (req, res) {
                 showWhyAnalysis: false
             };
             break;
+        case 'testNumberReset':
+            response = {
+                agentDescription: "this is a description",
+                agentName: "agent name",
+                contextId: "testNumberReset",
+                goals: [
+                    {
+                        _id: "86f68a6f-9f3b-4727-937d-0fea8c0a98d6",
+                        description: "When?",
+                        rel: "has age of",
+                        relIsGoal: false,
+                        subject: "person",
+                        subjectInstance: "user provided",
+                        text: "%O"
+                    }],
+                kbId: "31cfd00f-e6c5-4c04-b314-0fd81aa8217c",
+                kbName: "rb-661",
+                kbUser: "lawrie2",
+                showWhyAnalysis: false
+            };
+            break;
     }
 
     res.send(response);
@@ -189,6 +210,25 @@ app.post('/:id/query', function(req, res) {
                 "sid": "dunnowhatthisis"
             };
             break;
+        case 'testNumberReset':
+            console.log('Here');
+            response = {
+                "question": {
+                    "subject": "Ben",
+                    "dataType": "number",
+                    "relationship": "how old",
+                    "type": "Second Form Object",
+                    "plural": false,
+                    "allowCF": true,
+                    "allowUnknown": false,
+                    "canAdd": true,
+                    "prompt": "How old is Ben?",
+                    "knownAnswers": [],
+                    "concepts": []
+                },
+                "sid": "dunnowhatthisis"
+            };
+            break;
     }
 
     res.send(response);
@@ -235,6 +275,28 @@ app.post('/:id/response', function(req, res) {
                     "subject": "Ben",
                     "factID": "WA:RF:cc077b38f44fd192f9c382d8f277cb46",
                     "relationship": "speaks",
+                    "certainty": 75
+                }],
+                "stats": {
+                    "getDBFact": {"calls": 5, "items": 2, "ms": 22},
+                    "callDatasource": {"calls": 0, "ms": 0},
+                    "ensureCache": {"ms": 168},
+                    "setDBFact": {"calls": 1, "ms": 12},
+                    "totalMS": 234,
+                    "approxEngineMS": 0,
+                    "invocationStartTime": 1479826750276
+                },
+                "sid": "dunnowhatthisis"
+            };
+            break;
+        case 'testNumberReset':
+            console.log('here in result');
+            response = {
+                "result": [{
+                    "object": "11",
+                    "subject": "Ben",
+                    "factID": "WA:RF:cc077b38f44fd192f9c382d8f277cb46",
+                    "relationship": "is",
                     "certainty": 75
                 }],
                 "stats": {

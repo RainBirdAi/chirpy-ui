@@ -237,4 +237,36 @@ describe('CHIRPY', function() {
 
         browser.click('#sendCoverage');
     });
+
+    it('should be able to start an inference if last response was number only - PEN-180', function () {
+        browser.url('http://localhost:8079/tests/testNumberReset');
+        var responseButton = $('.responseButton');
+        var userInput = $('#userInput');
+        var rbchat = $('.rbchat');
+
+        responseButton.waitForExist(5000);
+        browser.click('.responseButton');
+        rbchat.waitForExist(5000);
+        var text = browser.getText('.triangle-isosceles-left');
+        assert.equal(text, 'Which person?');
+        browser.setValue('#userInput', 'Ben');
+        userInput.keys('\uE007');
+
+        browser.setValue('#userInput', 10);
+        userInput.keys('\uE007');
+
+        browser.setValue('#userInput', 'Whe');
+        browser.pause(1000);
+        userInput.keys('\uE015');  //down
+        userInput.keys('\uE004');  //tab
+        browser.pause(100);
+        userInput.keys('\uE007');
+
+        browser.pause(100);
+
+        var text = browser.getText('.triangle-isosceles-left')[3];
+        assert.equal(text, 'Which person?');
+
+        browser.click('#sendCoverage');
+    });
 });

@@ -10,6 +10,14 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v1.1.2
+
+  *  [Fix] RB-736: Fix number restriction not lifting if end of the session
+
+## v1.1.1
+
+  * [Misc] Fix github tag
+
 ## v1.1.0
 
   *  [Fix] RB-597: Change why analysis icon

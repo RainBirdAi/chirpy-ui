@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v1.1.3
+
+  *  [New] TRIN-170: Updates to support migration of agents and goals to mysql.
+
 ## v1.1.2
 
   *  [Fix] RB-736: Fix number restriction not lifting if end of the session

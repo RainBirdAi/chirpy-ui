@@ -35,7 +35,7 @@ var rapi = {
             type: 'GET',
             url: url,
             success: function (agent) {
-                rapi.showWhyAnalysis = agent.showWhyAnalysis;
+                rapi.showEvidence = agent.showEvidence;
                 callback(null, agent);
             },
             error: function (data, status) {
@@ -48,6 +48,6 @@ var rapi = {
     },
     sessionID: '',
     yolandaUrl: '',
-    showWhyAnalysis: false,
+    showEvidence: false,
     currentGoal: null
 };

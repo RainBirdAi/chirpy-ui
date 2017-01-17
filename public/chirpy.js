@@ -618,7 +618,7 @@ function showResults (results) {
                 .duration(100)
                 .style('opacity', 1)
 
-            if (rapi.showWhyAnalysis) {
+            if (rapi.showEvidence) {
                 chatline.select('p')
                     .append('a')
                     .attr('href', window.location.protocol + '//' + window.location.host +

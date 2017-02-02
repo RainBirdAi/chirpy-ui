@@ -128,6 +128,35 @@ app.get('/agent/:id/config', function (req, res) {
     res.send(response);
 });
 
+app.get('/agent/:id/start', function (req, res) {
+    var response;
+
+    switch (req.params.id) {
+        case 'test1':
+            response = {
+                sessionId: "test1",
+            };
+            break;
+        case 'testPlural':
+            response = {
+                sessionId: "testPlural",
+            };
+            break;
+        case 'testDate':
+            response = {
+                sessionId: "testDate",
+            };
+            break;
+        case 'testNumberReset':
+            response = {
+                sessionId: "testNumberReset",
+            };
+            break;
+    }
+
+    res.send(response);
+});
+
 app.post('/:id/query', function(req, res) {
     var response;
 

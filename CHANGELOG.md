@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.5.0
+
+  *  [Fix] RB-875: Fix Chirpy Agent not using new getSessionID
+
 ## v1.1.3
 
   *  [New] TRIN-170: Updates to support migration of agents and goals to mysql.

@@ -43,6 +43,19 @@ var rapi = {
             }
         });
     },
+    getSessionID: function(url, callback) {
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function (data) {
+                rapi.sessionID = data.sessionId;
+                callback(null, data);
+            },
+            error: function (data) {
+                callback(data);
+            }
+        });
+    },
     setYolandaURL: function(url) {
         rapi.yolandaUrl = url;
     },

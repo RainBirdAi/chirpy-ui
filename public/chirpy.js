@@ -1,58 +1,62 @@
 (function() {   //We serve this page wrapped in a div with the api and apiKey properties
-                //replace this with your own way of passing in the apikey and target url
+    //replace this with your own way of passing in the apikey and target url
     rapi.setYolandaURL(d3.select('#init').attr('api'));
     start();
     $('#userInput').focus();
 })();
 
 function selectGoal(goal) {
-    rapi.currentGoal = goal;
-    addUserChatLine(goal.description);
-    removeResponseButtons();
-    toggleHeader(true);
 
-    var waitForUserProvided = function() {
-        d3.select('#userInput')
-            .attr('placeholder', '');
-        addUserChatLine(d3.select('#userInput').property('value'));
-        var ourQuery = {
-            subject: goal.subjectInstance ? d3.select('#userInput').property('value') : null,
-            relationship: goal.rel,
-            object: goal.objectInstance ? d3.select('#userInput').property('value')  : null
+    rapi.getSessionID(window.location.protocol + '//' + window.location.host + '/agent/' + getIDFromUrl() + '/start', function(error, data, status) {
+
+        rapi.currentGoal = goal;
+        addUserChatLine(goal.description);
+        removeResponseButtons();
+        toggleHeader(true);
+
+        var waitForUserProvided = function () {
+            d3.select('#userInput')
+                .attr('placeholder', '');
+            addUserChatLine(d3.select('#userInput').property('value'));
+            var ourQuery = {
+                subject: goal.subjectInstance ? d3.select('#userInput').property('value') : null,
+                relationship: goal.rel,
+                object: goal.objectInstance ? d3.select('#userInput').property('value') : null
+            };
+            rapi.query(ourQuery, handleResponse);
+            closeAutoComplete();
+            clearUserInput();
         };
-        rapi.query(ourQuery, handleResponse);
-        closeAutoComplete();
-        clearUserInput();
-    };
 
-    if (goal.subjectInstance === 'user provided' || goal.objectInstance === 'user provided') {
-        closeAutoComplete();
-        clearUserInput();
-        removeRainbirdThinking();
-        removeAutoComplete();
-        d3.select('#userInput').attr('placeholder', '');
-        if (goal.subjectInstance) {
-            addRBChatLine('Which ' + goal.subject + '?');
-        } else {
-            addRBChatLine('Which ' + goal.object + '?');
-        }
-        d3.select('#sendButton').on('click', waitForUserProvided);
-        d3.select('#userInput').on('keyup', function() {
-            if (checkInputAndHighlightButtons({canAdd:true, allowUnknown:false}) && d3.event.key === 'Enter') {
-                waitForUserProvided();
+        if (goal.subjectInstance === 'user provided' || goal.objectInstance === 'user provided') {
+            closeAutoComplete();
+            clearUserInput();
+            removeRainbirdThinking();
+            removeAutoComplete();
+            d3.select('#userInput').attr('placeholder', '');
+            if (goal.subjectInstance) {
+                addRBChatLine('Which ' + goal.subject + '?');
+            } else {
+                addRBChatLine('Which ' + goal.object + '?');
             }
-        });
-    } else {
-        var ourQuery = {
-            subject: goal.subjectInstance ? goal.subjectInstance : null,
-            relationship: goal.rel,
-            object: goal.objectInstance ? goal.objectInstance : null
-        };
-        rapi.query(ourQuery, handleResponse);
-        closeAutoComplete();
-        clearUserInput();
-    }
-    resizeAndScroll();
+            d3.select('#sendButton').on('click', waitForUserProvided);
+            d3.select('#userInput').on('keyup', function () {
+                if (checkInputAndHighlightButtons({canAdd: true, allowUnknown: false}) && d3.event.key === 'Enter') {
+                    waitForUserProvided();
+                }
+            });
+        } else {
+            var ourQuery = {
+                subject: goal.subjectInstance ? goal.subjectInstance : null,
+                relationship: goal.rel,
+                object: goal.objectInstance ? goal.objectInstance : null
+            };
+            rapi.query(ourQuery, handleResponse);
+            closeAutoComplete();
+            clearUserInput();
+        }
+        resizeAndScroll();
+    });
 }
 
 function toggleHeader(show) {
@@ -120,7 +124,6 @@ function start () {
             });
 
             console.log(agent);
-            rapi.sessionID = agent.contextId;
             var autoComplete = [];
             agent.goals.forEach(function(goal) {
                 autoComplete.push(goal.description);

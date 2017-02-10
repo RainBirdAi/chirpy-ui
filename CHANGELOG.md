@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.6.0
+
+  *  [Fix] RB-878: Fix display on Firefox.
+
 ## v2.5.0
 
   *  [Fix] RB-875: Fix Chirpy Agent not using new getSessionID

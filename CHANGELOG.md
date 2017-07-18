@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.11.0
+
+  *  [Fix] RB-1189: Fix evidence tree pointing to wrong place.
+
 ## v2.6.0
 
   *  [Fix] RB-878: Fix display on Firefox.

@@ -81,6 +81,10 @@ body {
 .selectedLabel {
     background-color: #19adee;
 }
+.invalidResponse.selectedLabel {
+    background-color: #d42373;
+    opacity: 1 !important;
+}
 .selectedLabel > span {
     font-weight: 700;
 }

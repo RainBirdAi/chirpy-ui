@@ -400,17 +400,25 @@ function addQuestion (question) {
                         responseButton
                             .classed('responseButton', true)
                             .text(conc.value)
-                            .datum(conc)
-                            .on('click', function () {
-                                    send(question, conc.value);
-                                }
-                            );
+                            .datum(conc);
+
                         responseButton
-                            .style('opacity', 0)
                             .transition()
                             .delay(i * 10)
-                            .duration(250)
-                            .style('opacity', 1);
+                            .duration(250);
+
+                        if (conc.invalidResponse) {
+                            responseButton
+                                .style('opacity', 0.5)
+                                .classed('invalidResponse', true)
+                        } else {
+                            responseButton
+                                .on('click', function () {
+                                        send(question, conc.value);
+                                    }
+                                )
+                                .style('opacity', 1);
+                        }
                     }
                 }
             });

@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.12.0
+
+  *  [New] RB-1186: Restrict selection in second form questions for a plural false relationship when KM facts exist.
+
 ## v2.11.0
 
   *  [Fix] RB-1189: Fix evidence tree pointing to wrong place.

@@ -12,6 +12,7 @@ facing release notes.
 
 ## v2.12.0
 
+  * [Misc] RB-1233: Update component links in order to serve from rainbird-applications.
   *  [New] RB-1186: Restrict selection in second form questions for a plural false relationship when KM facts exist.
 
 ## v2.11.0

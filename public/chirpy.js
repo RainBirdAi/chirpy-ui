@@ -613,9 +613,10 @@ function showResults (results) {
     if (results.length) {
         results.forEach(function (result, i) {
             var resultText = rapi.currentGoal.text;
-            resultText = resultText.replace('%S', result.subject);
-            resultText = resultText.replace('%R', result.relationshipType ? result.relationshipType : result.relationship);
-            resultText = resultText.replace('%O', result.object);
+            resultText = resultText.replace(/%S/g, result.subject);
+            resultText = resultText.replace(/%R/g, result.relationshipType ? result.relationshipType : result.relationship);
+            resultText = resultText.replace(/%O/g, result.object);
+            resultText = resultText.replace(/%C/g, result.certainty);
 
             var chatline = addRBChatLine(resultText);
 

@@ -10,6 +10,11 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+
+## v2.13.0
+
+  * [Misc] RB-1262: Allow %C to be used in answer text for certainty.
+
 ## v2.12.0
 
   * [Misc] RB-1233: Update component links in order to serve from rainbird-applications.

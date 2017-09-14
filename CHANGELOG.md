@@ -13,6 +13,7 @@ facing release notes.
 
 ## v2.13.0
 
+  *  [Fix] RB-1251: Allow yes/no autocomplete.
   * [Misc] RB-1262: Allow %C to be used in answer text for certainty.
 
 ## v2.12.0

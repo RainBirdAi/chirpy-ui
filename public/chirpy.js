@@ -1,5 +1,5 @@
 (function() {   //We serve this page wrapped in a div with the api and apiKey properties
-    //replace this with your own way of passing in the apikey and target url
+                //replace this with your own way of passing in the apikey and target url
     rapi.setYolandaURL(d3.select('#init').attr('api'));
     start();
     $('#userInput').focus();
@@ -312,6 +312,9 @@ function addQuestion (question) {
                     }], handleResponse)
                 }
             );
+        addSingularAutoComplete(['yes', 'no']);
+
+
     } else if (!!~question.type.indexOf('Second Form')) {
         var autoCompleteNames = [];
         if (question.dataType === 'date') {
@@ -564,6 +567,10 @@ function checkInputAndHighlightButtons(question) {
             option.classed('selectedLabel', false);
         }
     });
+
+    if (question.type == 'First Form') {
+        question.concepts = [{value:'yes'}, {value:'no'}];
+    }
 
     if (question.concepts) {
         question.concepts.forEach(function(concept) {

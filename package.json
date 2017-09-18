@@ -1,6 +1,6 @@
 {
   "name": "chirpy-ui",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "private": true,
   "scripts": {
     "start": "nodejs test/testServer.js",
@@ -15,10 +15,11 @@
     "request": "2.74.x"
   },
   "devDependencies": {
-    "webdriverio": "latest",
+    "istanbul-middleware": "0.2.2",
+    "superagent": "3.6.0",
     "wdio-dot-reporter": "0.0.6",
     "wdio-mocha-framework": "0.5.4",
     "wdio-phantomjs-service": "0.2.2",
-    "istanbul-middleware": "0.2.2"
+    "webdriverio": "latest"
   }
 }

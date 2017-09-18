@@ -10,9 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
-
+## v2.14.0
+  * [Misc] RB-1090: Updated readme, added server.js to help getting started & updated the testServer.
+  
 ## v2.13.0
-
   *  [Fix] RB-1251: Allow yes/no autocomplete.
   * [Misc] RB-1262: Allow %C to be used in answer text for certainty.
 
@@ -35,7 +36,7 @@ facing release notes.
 
 ## v1.1.3
 
-  *  [New] TRIN-170: Updates to support migration of agents and goals to mysql.
+  *  [New] TRIN-170: Updates to support migration of agents and goals.
 
 ## v1.1.2
 
@@ -72,7 +73,7 @@ facing release notes.
   *  [Fix] RB-675: Fix unspecified second form object questions asking the wrong question
   *  [Fix] RB-638: Fix send button being clickable at wrong time
   *  [Fix] RB-677: Fix singular questions highlighting multiple response buttons if the text matched
-  *  [Fix] RB-676: Hard code Barclays colours
+  *  [Fix] RB-676: Change primary colours
 
 ## v1.0.3
 

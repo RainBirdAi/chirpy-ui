@@ -334,7 +334,7 @@ function addQuestion (question) {
                 $( '#userInput').datepicker('show');
             });
             d3.select('#userInput')
-                .attr('placeholder', 'YYYY/MM/DD');
+                .attr('placeholder', 'YYYY-MM-DD');
         } else if(question.dataType === 'number') {
             restrictInputToNumbersOnly(question);
         } else if(question.concepts) {

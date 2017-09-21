@@ -11,6 +11,10 @@ facing release notes.
   * [Misc] Other items
 
 
+## v2.13.1
+
+  *  [Fix] RB-1285: Fix date format.
+
 ## v2.13.0
 
   *  [Fix] RB-1251: Allow yes/no autocomplete.

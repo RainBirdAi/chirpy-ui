@@ -108,8 +108,8 @@ describe('CHIRPY', function() {
         browser.setValue('#userInput', 'Ben');
         userInput.keys('\uE007');
 
-        responseButton.waitForText('England', 5000);
-        browser.click('.responseButton');
+        rbchat.waitForExist(5000);
+        $('.optionHolder .responseButton:nth-child(1)').click();
 
         browser.click('#sendCoverage');
         wait();
@@ -128,8 +128,8 @@ describe('CHIRPY', function() {
         browser.setValue('#userInput', 'Ben');
         userInput.keys('\uE007');
 
-        responseButton.waitForText('England', 5000);
-        browser.click('.responseButton');
+        rbchat.waitForExist(5000);
+        $('.optionHolder .responseButton:nth-child(1)').click();
 
         browser.setValue('#userInput', 'Ben');
         userInput.keys('\uE007');
@@ -185,6 +185,8 @@ describe('CHIRPY', function() {
         browser.setValue('#userInput', 'Ben');
         userInput.keys('\uE007');
 
+        browser.pause(1000);
+
         text = browser.getText('.triangle-isosceles-left')[1];
         assert.equal(text, 'Where does Ben live?');
 
@@ -214,6 +216,8 @@ describe('CHIRPY', function() {
         browser.setValue('#userInput', 'Ben');
         userInput.keys('\uE007');
 
+        browser.pause(1000);
+
         text = browser.getText('.triangle-isosceles-left')[1];
         assert.equal(text, 'Where does Ben live?');
 
@@ -233,7 +237,7 @@ describe('CHIRPY', function() {
 
         browser.pause(1000);
 
-        assert.equal(userInput.getValue(), 'England, France,');
+        assert.equal(userInput.getValue(), 'England, France, ');
 
         browser.click('#sendCoverage');
     });

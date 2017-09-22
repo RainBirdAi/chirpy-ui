@@ -10,7 +10,8 @@ global.__rootDir = __dirname;
 
 var app = express();
 
-app.use('/components', express.static(__dirname + '/../components'));   //load unmetered required packages
+app.use('/applications/', express.static(path.join(__dirname, '/../public')));
+app.use('/applications/components', express.static(path.join(__dirname, '/../components'))); //load unmetered required packages
 istanbulMiddleware.hookLoader(__dirname +'/../');                       //add metering to our code
 app.use(istanbulMiddleware.createClientHandler(__dirname +'/../'));     //load our code
 

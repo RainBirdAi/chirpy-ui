@@ -328,13 +328,13 @@ function addQuestion (question) {
                     checkInputAndHighlightButtons({canAdd:true});
                     send(question);
                 },
-                dateFormat: "yy/mm/dd"
+                dateFormat: "yy-mm-dd"
             });
             d3.select( '#userInput').on('click', function() {
-                $( '#userInput').datepicker('show')
+                $( '#userInput').datepicker('show');
             });
             d3.select('#userInput')
-                .attr('placeholder', 'YYYY/MM/DD')
+                .attr('placeholder', 'YYYY-MM-DD');
         } else if(question.dataType === 'number') {
             restrictInputToNumbersOnly(question);
         } else if(question.concepts) {

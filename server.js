@@ -4,8 +4,12 @@ const path = require('path');
 const request = require('superagent');
 
 //Proxies 'Evidence Tree' request to the Rainbird Community environment
-app.get('/applications/components/rainbird-analysis-ui/:whyAnalysis', function(req, res) {
-    res.redirect('https://app.rainbird.ai' + req.originalUrl);
+app.get('/applications/:whyAnalysis', function(req, res, next) {
+    if (req.params.whyAnalysis === 'whyAnalysis.html'){
+        res.redirect('https://app.rainbird.ai' + req.originalUrl);
+    } else {
+        next();
+    }
 });
 
 app.use('/applications/', express.static(path.join(__dirname, 'public')));

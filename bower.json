@@ -1,6 +1,5 @@
 {
   "name": "chirpy-ui",
-  "version": "2.14.0",
   "homepage": "https://github.com/RainBirdAi/chirpy-ui",
   "dependencies": {
     "jquery": "1.9.1",
@@ -11,7 +10,6 @@
   "authors": [
     "follow@rainbird.ai"
   ],
-  "description": "",
   "main": "chirpy.js",
   "moduleType": [
     "globals"

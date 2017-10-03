@@ -12,7 +12,7 @@ facing release notes.
 
 ## v2.14.0
 
-  * [Misc] RB-1312: Move chirpy-ui from bower to npm & update Evidence Tree url.
+  * [Misc] RB-1312: Move how chirpy-ui is installed from bower to npm.
   * [Misc] RB-1090: Updated readme, added server.js to help getting started & updated the testServer.
 
 ## v2.13.1

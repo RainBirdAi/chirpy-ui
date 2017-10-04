@@ -1,7 +1,9 @@
 {
   "name": "chirpy-ui",
-  "version": "1.1.5",
-  "private": true,
+  "version": "2.14.0",
+  "publishConfig": {
+    "registry": "https://npm.rainbird.ai"
+  },
   "scripts": {
     "start": "nodejs test/testServer.js",
     "lint": "eslint *.js public/**/*.js"

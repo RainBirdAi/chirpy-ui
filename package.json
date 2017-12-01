@@ -1,6 +1,6 @@
 {
   "name": "chirpy-ui",
-  "version": "2.16.0",
+  "version": "2.16.1",
   "publishConfig": {
     "registry": "https://npm.rainbird.ai"
   },
@@ -13,7 +13,7 @@
     "express-session": "1.12.x",
     "body-parser": "latest",
     "eslint": "2.8.x",
-    "ejs": "1.0.0",
+    "ejs": "2.5.x",
     "request": "2.74.x"
   },
   "devDependencies": {

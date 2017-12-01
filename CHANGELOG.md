@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.16.0
+
+  * [Misc] RB-1367: Update ejs version due to vulnerability.
+
 ## v2.14.0
 
   * [Misc] RB-1312: Move how chirpy-ui is installed from bower to npm.

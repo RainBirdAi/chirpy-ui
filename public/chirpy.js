@@ -124,19 +124,29 @@ function start () {
             });
 
             console.log(agent);
-            var autoComplete = [];
-            agent.goals.forEach(function(goal) {
-                autoComplete.push(goal.description);
-                var optionHolder = d3.select('.optionHolder');
-                optionHolder
-                    .append('div')
-                    .classed('responseButton', true)
-                    .text(goal.description)
-                    .on('click', function() {
-                        selectGoal(goal);
-                    });
-                addSingularAutoComplete(autoComplete);
-            });
+
+            if (agent.goals.length == 1) {
+                selectGoal(agent.goals[0]);
+            } else {
+                var autoComplete = [];
+                agent.goals.forEach(function(goal) {
+                    autoComplete.push(goal.description);
+
+                    if (!agent.uiSettings.hideQueryButtons) {
+                        var optionHolder = d3.select('.optionHolder');
+                        optionHolder
+                            .append('div')
+                            .classed('responseButton', true)
+                            .text(goal.description)
+                            .on('click', function() {
+                                selectGoal(goal);
+                            });
+                    }
+
+                    addSingularAutoComplete(autoComplete);
+                });
+            }
+
             resizeAndScroll();
         }
     });
@@ -530,7 +540,10 @@ function send(question, input) {
 }
 
 function closeAutoComplete() {
-    $('#userInput').autocomplete('close');
+    if (typeof($('#userInput').attr('autocomplete')) != 'undefined') {
+        $('#userInput').autocomplete('close');
+    }
+
 }
 
 function checkInputAndHighlightButtons(question) {

@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.17.0
+
+  * [New] RB-1375: Automatically start if only single query and hide query buttons depending on configuration.
+
 ## v2.16.0
 
   * [Misc] RB-1367: Update ejs version due to vulnerability.

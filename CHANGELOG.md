@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.18.0
+
+  * [Fix] RB-1433: Fix Chat Agent missing css and jquery dependencies.
+
 ## v2.17.0
 
   * [New] RB-1375: Automatically start if only single query and hide query buttons depending on configuration.

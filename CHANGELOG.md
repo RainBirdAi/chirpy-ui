@@ -12,6 +12,7 @@ facing release notes.
 
 ## v2.18.0
 
+  * [Fix] RB-1449: Update jquery-ui.
   * [Fix] RB-1433: Fix Chat Agent missing css and jquery dependencies.
 
 ## v2.17.0

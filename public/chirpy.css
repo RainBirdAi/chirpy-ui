@@ -119,8 +119,7 @@ a {
     color: white;
 }
 .whyAnalysisButton {
-    float: right;
-    margin-top: 2px;
+    margin: 0 5px;
 }
 .tooltiptext {
     position: relative;
@@ -175,7 +174,7 @@ a {
 
 .dateIcon {
     position: absolute;
-    right: 67px;
+    right: 72px;
     z-index: 20;
     top: 9px;
     font-size: 17px;

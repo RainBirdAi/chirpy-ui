@@ -331,7 +331,7 @@ function addQuestion (question) {
             d3.select('#user-inputs')
                 .select('.input-group')
                 .append('span')
-                .attr('class', 'dateIcon glyphicon glyphicon-calendar');
+                .attr('class', 'dateIcon fa fa-calendar');
 
             $('#userInput').datepicker({
                 onSelect:function(){
@@ -657,7 +657,7 @@ function showResults (results) {
                         '/applications/components/rainbird-analysis-ui/whyAnalysis.html?id=' + result.factID + '?api=' + rapi.yolandaUrl)
                     .attr('target', '_blank')
                     .append('span')
-                    .attr('class', 'glyphicon glyphicon-info-sign')
+                    .attr('class', 'fa fa-info-circle')
                     .classed('whyAnalysisButton', true)
                     .on('mouseover', function () {
                         d3.select('#tooltiptext').transition().duration(500).style('opacity', 1);

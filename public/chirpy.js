@@ -164,6 +164,8 @@ function handleResponse(err, data) {
     removeRainbirdThinking();
     if (err) {
         addRBChatLine('Sorry, error processing your request');
+        resizeAndScroll();
+        start();
     } else if (data.question) {
         addQuestion(data.question);
     } else {

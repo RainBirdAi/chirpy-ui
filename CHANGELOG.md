@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.19.0
+
+  * [Fix] RB-1302: Chat agent does not 'reset' if it encounters an error.
+
 ## v2.18.0
 
   * [Fix] RB-1504: Fix missing icons.

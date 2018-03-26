@@ -86,8 +86,6 @@ function start () {
     removeInputRestriction();
     d3.select('#sendButton').classed('disabled', true);
     d3.select('#sendButton').text('Send');
-    d3.select('#userInput')
-        .attr('placeholder', 'Type or select a question you\'d like to ask');
     d3.select('#resetButton').on('click', function() {
         removeRainbirdThinking();
         removeAutoComplete();
@@ -129,6 +127,10 @@ function start () {
                 selectGoal(agent.goals[0]);
             } else {
                 var autoComplete = [];
+
+                d3.select('#userInput')
+                    .attr('placeholder', 'Type or select a question you\'d like to ask');
+
                 agent.goals.forEach(function(goal) {
                     autoComplete.push(goal.description);
 

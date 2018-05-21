@@ -1,6 +1,6 @@
 {
   "name": "chirpy-ui",
-  "version": "2.21.0",
+  "version": "2.21.1",
   "publishConfig": {
     "registry": "https://npm.rainbird.ai"
   },
@@ -14,7 +14,7 @@
     "body-parser": "latest",
     "eslint": "2.8.x",
     "ejs": "2.5.x",
-    "request": "2.74.x"
+    "request": "2.87.x"
   },
   "devDependencies": {
     "istanbul-middleware": "0.2.2",

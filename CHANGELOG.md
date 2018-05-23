@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.21.0
+
+  * [Misc] RB-1604: Removed Hoek vulnerability by updating Request library.
+
 ## v2.19.0
 
   * [Fix] RB-1448: Only display the opening placeholder when there is a choice of goals to run.

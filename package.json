@@ -1,6 +1,6 @@
 {
   "name": "chirpy-ui",
-  "version": "2.21.1",
+  "version": "2.22.0",
   "publishConfig": {
     "registry": "https://npm.rainbird.ai"
   },

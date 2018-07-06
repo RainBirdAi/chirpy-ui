@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.23.0
+
+  * [Misc] RB-3150 Removed unused dependency express-session.
+
 ## v2.21.0
 
   * [Misc] RB-1604: Removed Hoek vulnerability by updating Request library.

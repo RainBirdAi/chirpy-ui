@@ -12,6 +12,7 @@ facing release notes.
 
 ## v2.23.0
 
+  * [Misc] RB-3192: Added basic Google analytics - page view tracking.
   * [Misc] RB-3150 Removed unused dependency express-session.
 
 ## v2.21.0

@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.24.0
+
+  * [Fix]  RB-1712: Prevent Chirpy from continuously auto-starting.
+
 ## v2.23.0
 
   * [Misc] RB-3192: Added basic Google analytics - page view tracking.

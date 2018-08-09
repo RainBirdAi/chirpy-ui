@@ -1,7 +1,7 @@
 (function() {   //We serve this page wrapped in a div with the api and apiKey properties
                 //replace this with your own way of passing in the apikey and target url
     rapi.setYolandaURL(d3.select('#init').attr('api'));
-    start();
+    start({ autoStartSingleQuery: true });
     $('#userInput').focus();
 })();
 
@@ -81,7 +81,8 @@ function toggleHeader(show) {
     }
 }
 
-function start () {
+function start (settings) {
+    var autoStartSingleQuery = settings && settings.autoStartSingleQuery;
     removeDatePicker();
     removeInputRestriction();
     d3.select('#sendButton').classed('disabled', true);
@@ -91,7 +92,7 @@ function start () {
         removeAutoComplete();
         clearUserInput();
         removeResponseButtons();
-        start();
+        start({ autoStartSingleQuery: true });
     });
     d3.select('#sendButton').on('click', null);
     d3.select('#userInput').on('keyup', null);
@@ -123,7 +124,7 @@ function start () {
 
             console.log(agent);
 
-            if (agent.goals.length == 1) {
+            if (agent.goals.length == 1 && autoStartSingleQuery) {
                 selectGoal(agent.goals[0]);
             } else {
                 var autoComplete = [];

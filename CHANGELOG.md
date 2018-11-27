@@ -10,6 +10,10 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.27.0
+
+  * [Fix]  RB-3258: low severity security vulnerability detected in superagent <3.7.0 defined in package.json.
+
 ## v2.24.0
 
   * [Fix]  RB-1712: Prevent Chirpy from continuously auto-starting.

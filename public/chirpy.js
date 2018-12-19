@@ -450,7 +450,6 @@ function addQuestion (question) {
     resizeAndScroll();
     d3.select('#sendButton')
         .on('click', function() {
-            // @todo add missing skip;
             checkInputAndHighlightButtons(question)
             send(question);
         });

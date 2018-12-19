@@ -450,9 +450,8 @@ function addQuestion (question) {
     resizeAndScroll();
     d3.select('#sendButton')
         .on('click', function() {
-            if (checkInputAndHighlightButtons(question)) {
-                send(question);
-            }
+            checkInputAndHighlightButtons(question)
+            send(question);
         });
 }
 
@@ -490,15 +489,25 @@ function send(question, input) {
     var response = [];
     var userString = input ? input : d3.select('#userInput').property('value');
     var nonWhiteSpace = userString.search( /\S/ );
+
     if (!~nonWhiteSpace) {
         addUserChatLine('Skip');
-        response.push({
-            subject: question.type === 'Second Form Object' ? question.subject : null,
-            relationship: question.relationship,
-            object: question.type === 'Second Form Object' ? null : question.object,
+        const data = {
             cf: 100,
-            unanswered: true
-        });
+            unanswered: true,
+            relationship: question.relationship,
+        }
+
+        if (question.type === 'Second Form Object') {
+            data.subject = question.subject;
+        } else if (question.type === 'Second Form Subject') {
+            data.object = question.object;
+        } else if (question.type === 'First Form') {
+            data.object = question.object;
+            data.subject = question.subject
+        }
+
+        response.push(data);
     } else {
         if (question.type === 'First Form') {
             addUserChatLine(userString);

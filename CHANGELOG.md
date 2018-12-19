@@ -10,6 +10,9 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.28.0
+  * [Fix]  RB-1527: fix missing skip functionality
+
 ## v2.27.0
 
   * [Fix]  RB-3258: low severity security vulnerability detected in superagent <3.7.0 defined in package.json.

@@ -498,7 +498,9 @@ function send(question, input) {
             relationship: question.relationship,
         }
 
-        if (question.type === 'Second Form Subject') {
+        if (question.type === 'Second Form Object') {
+            data.subject = question.subject;
+        } else if (question.type === 'Second Form Subject') {
             data.object = question.object;
         } else if (question.type === 'First Form') {
             data.object = question.object;

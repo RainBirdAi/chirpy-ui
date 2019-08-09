@@ -7,7 +7,7 @@
 
 function selectGoal(goal) {
 
-    rapi.getSessionID(window.location.protocol + '//' + window.location.host + '/agent/' + getIDFromUrl() + '/start', function(error, data, status) {
+    rapi.getSessionID(window.location.protocol + '//' + window.location.host + '/agent/' + getIDFromUrl() + '/start', function() {
 
         rapi.currentGoal = goal;
         addUserChatLine(goal.description);
@@ -214,7 +214,7 @@ function addUserChatLine(text) {
 }
 
 function addRainbirdThinking () {
-    var chatHolder = d3.select('.chatHolder').select('#innerRows')
+    d3.select('.chatHolder').select('#innerRows')
         .append('div')
         .attr('id', 'loadingGIF')
         .append('img')
@@ -226,7 +226,7 @@ function addRainbirdThinking () {
         .style('opacity', 1);
 }
 function removeRainbirdThinking () {
-    var chatHolder = d3.select('#loadingGIF').remove();
+    d3.select('#loadingGIF').remove();
 }
 
 function addRBChatLine (string) {
@@ -330,7 +330,7 @@ function addQuestion (question) {
         addSingularAutoComplete(['yes', 'no']);
 
 
-    } else if (!!~question.type.indexOf('Second Form')) {
+    } else if (question.type.indexOf('Second Form') !== -1) {
         var autoCompleteNames = [];
         if (question.dataType === 'date') {
             d3.select('#user-inputs')
@@ -626,7 +626,7 @@ function checkInputAndHighlightButtons(question) {
         d3.select('#sendButton').classed('disabled', true);
         d3.select('#sendButton').text('Send');
         return false;
-    } else if (!!~nonWhiteSpace) {
+    } else if (nonWhiteSpace !== -1) {
         d3.select('#sendButton').classed('disabled', false);
         d3.select('#sendButton').text('Send');
         return true;

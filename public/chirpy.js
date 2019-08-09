@@ -330,7 +330,7 @@ function addQuestion (question) {
         addSingularAutoComplete(['yes', 'no']);
 
 
-    } else if (!!~question.type.indexOf('Second Form')) {
+    } else if (question.type.indexOf('Second Form') !== -1) {
         var autoCompleteNames = [];
         if (question.dataType === 'date') {
             d3.select('#user-inputs')
@@ -626,7 +626,7 @@ function checkInputAndHighlightButtons(question) {
         d3.select('#sendButton').classed('disabled', true);
         d3.select('#sendButton').text('Send');
         return false;
-    } else if (!!~nonWhiteSpace) {
+    } else if (nonWhiteSpace !== -1) {
         d3.select('#sendButton').classed('disabled', false);
         d3.select('#sendButton').text('Send');
         return true;

@@ -5,10 +5,10 @@ var rapi = {
             url: rapi.yolandaUrl + '/' + rapi.sessionID + "/response",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify({answers:answers}),
-            success: function (data, status) {
+            success: function (data) {
                 callback(null, data);
             },
-            error: function (data, status) {
+            error: function (data) {
                 console.error(data);
                 callback(data);
             }
@@ -20,11 +20,11 @@ var rapi = {
             url: rapi.yolandaUrl + '/' + rapi.sessionID + "/query",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(query),
-            success: function (data, status) {
+            success: function (data) {
                 console.log('data', data);
                 callback(null, data);
             },
-            error: function (data, status) {
+            error: function (data) {
                 console.error(data);
                 callback(data);
             }
@@ -38,7 +38,7 @@ var rapi = {
                 rapi.showEvidence = agent.showEvidence;
                 callback(null, agent);
             },
-            error: function (data, status) {
+            error: function (data) {
                 callback(data);
             }
         });

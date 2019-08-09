@@ -7,7 +7,7 @@
 
 function selectGoal(goal) {
 
-    rapi.getSessionID(window.location.protocol + '//' + window.location.host + '/agent/' + getIDFromUrl() + '/start', function(error, data, status) {
+    rapi.getSessionID(window.location.protocol + '//' + window.location.host + '/agent/' + getIDFromUrl() + '/start', function() {
 
         rapi.currentGoal = goal;
         addUserChatLine(goal.description);
@@ -214,7 +214,7 @@ function addUserChatLine(text) {
 }
 
 function addRainbirdThinking () {
-    var chatHolder = d3.select('.chatHolder').select('#innerRows')
+    d3.select('.chatHolder').select('#innerRows')
         .append('div')
         .attr('id', 'loadingGIF')
         .append('img')
@@ -226,7 +226,7 @@ function addRainbirdThinking () {
         .style('opacity', 1);
 }
 function removeRainbirdThinking () {
-    var chatHolder = d3.select('#loadingGIF').remove();
+    d3.select('#loadingGIF').remove();
 }
 
 function addRBChatLine (string) {

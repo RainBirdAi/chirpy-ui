@@ -10,6 +10,9 @@ facing release notes.
   *  [Fix] A bug fix
   * [Misc] Other items
 
+## v2.37.0
+  * [Fix]  RB-4050: Update vulnerable packages.
+
 ## v2.28.0
   * [Fix]  RB-1527: fix missing skip functionality
 

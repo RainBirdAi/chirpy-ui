@@ -1,6 +1,6 @@
 {
   "name": "chirpy-ui",
-  "version": "2.37.0",
+  "version": "2.37.1",
   "publishConfig": {
     "registry": "https://npm.rainbird.ai"
   },
@@ -9,17 +9,17 @@
     "lint": "eslint *.js public/**/*.js"
   },
   "dependencies": {
-    "express": "4.x",
     "body-parser": "latest",
-    "eslint": "2.8.x",
     "ejs": "2.5.x",
+    "eslint": ">=4.18.2",
+    "express": "^4.17.1",
     "request": "2.87.x"
   },
   "devDependencies": {
     "istanbul-middleware": "0.2.2",
     "superagent": "3.8.3",
     "wdio-dot-reporter": "0.0.6",
-    "wdio-mocha-framework": "0.5.4",
+    "wdio-mocha-framework": "^0.6.4",
     "wdio-phantomjs-service": "0.2.2",
     "webdriverio": "latest"
   }

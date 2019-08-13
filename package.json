@@ -16,6 +16,7 @@
     "request": "2.87.x"
   },
   "devDependencies": {
+    "express-session": "^1.16.2",
     "istanbul-middleware": "0.2.2",
     "superagent": "3.8.3",
     "wdio-dot-reporter": "0.0.6",

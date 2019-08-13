@@ -351,16 +351,22 @@ app.all('/*', function(req, res) {
 
 // END UNIT TESTS
 
-app.listen(8079);
-console.info('Listening on port ' + 8079);
+app.listen(8079, () => {
 
-var selenium = proc.exec('./node_modules/.bin/wdio wdio.conf.js');
+  console.info('Listening on port ' + 8079);
 
-selenium.stdout.on('data', function(data) {
-    console.log(data.toString());
-});
+  var selenium = proc.exec('./node_modules/.bin/wdio wdio.conf.js');
 
-selenium.on('exit', function(exitCode) {
-    console.log('selenium finished with exit code: ' + exitCode);
-    process.exit(exitCode);
+  selenium.stdout.on('data', function(data) {
+      console.log(data.toString());
+  });
+
+  selenium.stdout.on('error', function(e) {
+      console.log('Error: ', e);
+  });
+
+  selenium.on('exit', function(exitCode) {
+      console.log('selenium finished with exit code: ' + exitCode);
+      process.exit(exitCode);
+  });
 });
